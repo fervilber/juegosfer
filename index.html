@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FunnyMathPlanet - Portal de Juegos Matemáticos</title>
+  <meta name="description" content="Portal interactivo de juegos de cálculo mental y agilidad matemática sobre mallas hexagonales.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- =========================================================================
+       CABECERA
+       ========================================================================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="assets/logoFMP.jpg" alt="FunnyMathPlanet Logo" class="w-10 h-10 rounded-xl shadow-sm object-cover">
+        <div>
+          <span class="text-xl font-extrabold text-brand-800 tracking-tight block">FunnyMathPlanet</span>
+          <span class="text-xs text-slate-500 font-medium">Juegos de Agilidad Mental & Aritmética</span>
+        </div>
+      </div>
+      <div>
+        <a href="https://www.amazon.es/dp/B0D5HL7945" target="_blank" rel="noopener noreferrer" class="bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors inline-flex items-center gap-1.5 shadow-sm">
+          <span>📚</span>
+          <span class="hidden sm:inline">Libros Impresos</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       HERO / INTRODUCCIÓN
+       ========================================================================= -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-12">
+    
+    <div class="text-center space-y-3 max-w-2xl mx-auto">
+      <span class="bg-brand-100 text-brand-700 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+        🎮 Catálogo Interactivo
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        Entrena tu mente con retos matemáticos hexagonales
+      </h1>
+      <p class="text-slate-600 text-sm sm:text-base font-medium">
+        Selecciona uno de los juegos interactivos a continuación para comenzar a jugar de forma inmediata en tu navegador.
+      </p>
+    </div>
+
+    <!-- =========================================================================
+         TARJETAS DE SELECCIÓN DE JUEGOS
+         ========================================================================= -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- JUEGO 1: LABERINTO DE SUMAS -->
+      <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
+        <div class="p-6 sm:p-8 space-y-4">
+          
+          <div class="flex justify-between items-start">
+            <div class="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-brand-100">
+              🌀
+            </div>
+            <span class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-1 rounded-full">
+              🌟 Modo Competitivo Top 10
+            </span>
+          </div>
+
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-1">
+              Laberinto de Sumas
+            </h2>
+            <p class="text-xs text-brand-700 font-semibold uppercase tracking-wider mb-2.5">
+              Camino Aritmético con Puntos Maestros
+            </p>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Conecta la casilla de <b>INICIO</b> con la de <b>FINAL</b> avanzando paso a paso por casillas contiguas. Cada tramo debe sumar exactamente el valor objetivo para validar los <b>Puntos Maestros</b>.
+            </p>
+          </div>
+
+          <!-- Badges de características -->
+          <div class="flex flex-wrap gap-1.5 pt-2">
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🏆 Salón de la Fama</span>
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">⏱️ Cronómetro en vivo</span>
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">📄 Descarga PDF A4</span>
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🔊 Sonido sintetizado</span>
+          </div>
+
+        </div>
+
+        <div class="p-6 sm:p-8 pt-0">
+          <a href="laberinto.html" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 group">
+            <span>🚀 Jugar al Laberinto</span>
+            <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- JUEGO 2: SUMAS EMPAREJADAS -->
+      <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
+        <div class="p-6 sm:p-8 space-y-4">
+          
+          <div class="flex justify-between items-start">
+            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-emerald-100">
+              🎯
+            </div>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">
+              ✨ 6 Formas Geométricas
+            </span>
+          </div>
+
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-1">
+              Sumas Emparejadas
+            </h2>
+            <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wider mb-2.5">
+              Búsqueda y Detección de Parejas Contiguas
+            </p>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Explora una malla hexagonal con formas como <b>Círculo, Donut, Rombo, Corazón o Casa</b> y descubre todas las parejas de hexágonos adyacentes cuya suma coincida con el valor buscado.
+            </p>
+          </div>
+
+          <!-- Badges de características -->
+          <div class="flex flex-wrap gap-1.5 pt-2">
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🏆 Salón de la Fama</span>
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🔷 6 Formas (Rombo, Donut...)</span>
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🎯 Contador en Vivo</span>
+            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">📄 Descarga PDF A4</span>
+          </div>
+
+        </div>
+
+        <div class="p-6 sm:p-8 pt-0">
+          <a href="sumas-emparejadas.html" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 group">
+            <span>🎯 Jugar a Sumas Emparejadas</span>
+            <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         BANNER DE LIBROS Y AUTORÍA
+         ========================================================================= -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 card-shadow flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-5">
+        <img src="assets/logoFMP.jpg" alt="FunnyMathPlanet" class="w-16 h-16 rounded-2xl shadow-sm object-cover shrink-0">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">¿Te apasionan los pasatiempos matemáticos impresos?</h3>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            Descubre nuestra colección completa de libros de laberintos y sumas editados por FunnyMathPlanet en Amazon.
+          </p>
+        </div>
+      </div>
+      <a href="https://www.amazon.es/dp/B0D5HL7945" target="_blank" rel="noopener noreferrer" class="shrink-0 bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold px-5 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2">
+        <span>📖</span> Ver Libros en Amazon &rarr;
+      </a>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       PIE DE PÁGINA
+       ========================================================================= -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400">
+    <p>© 2026 FunnyMathPlanet. Todos los derechos reservados. Aplicaciones interactivas de cálculo mental.</p>
+  </footer>
+
+</body>
+</html>

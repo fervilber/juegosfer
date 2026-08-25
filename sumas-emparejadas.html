@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sumas Emparejadas - FunnyMathPlanet</title>
+  <meta name="description" content="Juego interactivo de cálculo mental sobre mallas hexagonales: encuentra todas las parejas de casillas adyacentes que sumen el valor objetivo.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- jsPDF para descarga de PDFs imprimibles en cliente -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- =========================================================================
+       CABECERA PRINCIPAL
+       ========================================================================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+      
+      <!-- Título, Marca y Botón de Inicio -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" title="Volver al menú de juegos" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-xl border border-slate-200 transition-colors flex items-center gap-1.5 text-xs font-bold shadow-sm">
+          <span>🏠</span>
+          <span class="hidden sm:inline">Menú</span>
+        </a>
+        <div class="bg-emerald-600 text-white p-2 rounded-xl shadow-md">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-brand-800 tracking-tight flex items-center gap-2">
+            Sumas Emparejadas
+            <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-bold">Web v1.0</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Juego de agilidad mental por FunnyMathPlanet</p>
+        </div>
+      </div>
+
+      <!-- Widgets en vivo: Tiempo, Puntos y Acceso a Ranking -->
+      <div class="flex items-center gap-3">
+        <!-- Widget Tiempo -->
+        <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-center shadow-inner">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tiempo</span>
+          <span id="displayTimer" class="font-mono font-extrabold text-lg text-slate-800">00:00</span>
+        </div>
+
+        <!-- Widget Puntuación -->
+        <div class="bg-slate-50 border border-slate-200 px-4 py-1.5 rounded-xl text-center shadow-inner">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Puntos</span>
+          <span id="displayScore" class="font-extrabold text-lg text-emerald-600">0</span>
+        </div>
+
+        <!-- Botón Ranking -->
+        <button id="btnToggleRanking" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3.5 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5 transition-colors shadow-sm">
+          <span>🏆</span>
+          <span class="hidden sm:inline">Salón de la Fama</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       CONTENIDO PRINCIPAL
+       ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- BARRA LATERAL (CONTROLES Y DIFICULTAD) -->
+    <aside class="lg:col-span-4 space-y-5">
+
+      <!-- Tarjeta 1: Selector de Nivel de Dificultad -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
+        <h2 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+          <span>🎮</span> Nivel de Dificultad
+        </h2>
+
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <div>
+            <input type="radio" id="presetFacil" name="difficultyPreset" value="facil" class="hidden preset-radio">
+            <label for="presetFacil" class="block text-center py-2.5 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 cursor-pointer transition-all hover:bg-slate-50">
+              🟢 Fácil (6x6)
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="presetMedio" name="difficultyPreset" value="medio" class="hidden preset-radio" checked>
+            <label for="presetMedio" class="block text-center py-2.5 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 cursor-pointer transition-all hover:bg-slate-50">
+              🟡 Medio (8x8)
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="presetDificil" name="difficultyPreset" value="dificil" class="hidden preset-radio">
+            <label for="presetDificil" class="block text-center py-2.5 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 cursor-pointer transition-all hover:bg-slate-50">
+              🔴 Difícil (11x11)
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="presetExperto" name="difficultyPreset" value="experto" class="hidden preset-radio">
+            <label for="presetExperto" class="block text-center py-2.5 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 cursor-pointer transition-all hover:bg-slate-50">
+              🟣 Experto (14x14)
+            </label>
+          </div>
+          <div class="col-span-2">
+            <input type="radio" id="presetCustom" name="difficultyPreset" value="custom" class="hidden preset-radio">
+            <label for="presetCustom" class="block text-center py-2 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 cursor-pointer transition-all hover:bg-slate-50">
+              🛠️ Personalizado (Avanzado)
+            </label>
+          </div>
+        </div>
+
+        <!-- Botón Principal -->
+        <button id="btnNewGame" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition-transform transform active:scale-95 flex items-center justify-center gap-2">
+          <span>🎲</span> ¡GENERAR NUEVO JUEGO!
+        </button>
+      </div>
+
+      <!-- Tarjeta 2: Panel Colapsable de Configuración Avanzada -->
+      <div id="customConfigPanel" class="hidden bg-white p-5 rounded-2xl border border-slate-200 card-shadow space-y-4">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2 border-b pb-2">
+          <span>⚙️</span> Parámetros Personalizados
+        </h3>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Columnas (nc):</label>
+            <input type="number" id="inputCols" value="8" min="4" max="20" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-medium">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Filas (nf):</label>
+            <input type="number" id="inputRows" value="8" min="4" max="20" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-medium">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Valor Buscado (Suma):</label>
+          <input type="number" id="inputTarget" value="14" min="5" max="50" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-medium">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Múltiplos relleno:</label>
+            <input type="number" id="inputRelleno" value="0" min="0" max="10" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-medium">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Forma del Tablero:</label>
+            <select id="inputShape" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-medium">
+              <option value="0">Rectángulo</option>
+              <option value="1">Círculo</option>
+              <option value="2">Donut</option>
+              <option value="3">Rombo</option>
+              <option value="4">Corazón</option>
+              <option value="5">Casa</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3: Reglas Rápidas del Juego -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
+        <h3 class="text-sm font-bold text-slate-900 mb-2.5 flex items-center gap-1.5">
+          <span>📌</span> Cómo Jugar:
+        </h3>
+        <ul class="text-xs text-slate-600 space-y-1.5 pl-4 list-disc font-medium">
+          <li>Toca una primera casilla hexagonal para seleccionarla.</li>
+          <li>Toca una casilla <b class="text-emerald-700">contigua adyacente</b>.</li>
+          <li>Si la suma de ambos números es igual al <b class="text-brand-700">Valor Buscado</b>, el par quedará conectado.</li>
+          <li>¡Descubre todas las parejas ocultas y entra en el <b class="text-emerald-700">Top 10</b>!</li>
+        </ul>
+      </div>
+
+      <!-- Branding y Enlaces -->
+      <div class="text-center pt-2">
+        <img src="assets/logoFMP.jpg" alt="FunnyMathPlanet" class="w-16 h-16 rounded-xl shadow-sm mx-auto mb-2 object-cover">
+        <p class="text-xs font-medium text-slate-500">Una App de FunnyMathPlanet</p>
+        <a href="https://www.amazon.es/dp/B0D5HL7945" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors inline-block mt-1">
+          Descubre los libros impresos aquí &rarr;
+        </a>
+      </div>
+
+    </aside>
+
+    <!-- ÁREA DE JUEGO PRINCIPAL Y PESTAÑAS -->
+    <section class="lg:col-span-8 space-y-4">
+
+      <!-- Pestañas de Navegación -->
+      <div class="flex border-b border-slate-200 gap-2">
+        <button data-tab-target="tabGame" class="tab-btn py-2.5 px-4 text-sm font-bold border-b-2 border-brand-600 text-brand-700 bg-brand-50 rounded-t-xl transition-all flex items-center gap-1.5">
+          <span>🎯</span> Tablero de Juego
+        </button>
+        <button data-tab-target="tabRanking" class="tab-btn py-2.5 px-4 text-sm font-bold border-b-2 border-transparent text-slate-600 hover:text-slate-900 rounded-t-xl transition-all flex items-center gap-1.5">
+          <span>🏆</span> Salón de la Fama (Top 10)
+        </button>
+        <button data-tab-target="tabSolution" class="tab-btn py-2.5 px-4 text-sm font-bold border-b-2 border-transparent text-slate-600 hover:text-slate-900 rounded-t-xl transition-all flex items-center gap-1.5">
+          <span>🔍</span> Solución Oficial
+        </button>
+      </div>
+
+      <!-- PANEL 1: TABLERO DE JUEGO -->
+      <div id="tabGame" class="tab-pane space-y-4">
+        
+        <!-- Panel de Estado en Vivo (Pares Descubiertos, Valor Buscado) -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 card-shadow flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Valor Buscado</span>
+            <span id="displayTarget" class="text-xl font-extrabold text-emerald-600">14</span>
+          </div>
+
+          <div class="text-center">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Pares Encontrados</span>
+            <span id="displayPairsCount" class="inline-block px-3 py-1 rounded-lg font-extrabold text-lg bg-emerald-100 text-emerald-900">0 / 0</span>
+            <div id="displayPrompt" class="text-xs font-medium text-slate-500 mt-1">Toca dos casillas contiguas para sumarlas...</div>
+          </div>
+
+          <div class="text-right">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Dificultad</span>
+            <span id="displayDifficulty" class="text-base sm:text-lg font-extrabold text-slate-800">Medio</span>
+          </div>
+        </div>
+
+        <!-- Contenedor del Canvas de Juego -->
+        <div class="bg-white p-2.5 rounded-2xl border border-slate-200 card-shadow overflow-hidden flex items-center justify-center min-h-[480px]">
+          <canvas id="pairsCanvas" class="max-w-full block mx-auto"></canvas>
+        </div>
+
+        <!-- Botones de Acción Rápida y Pie -->
+        <div class="flex flex-wrap justify-between items-center gap-3 pt-1">
+          <div class="flex gap-2">
+            <button id="btnUndoPair" class="bg-white hover:bg-slate-100 text-amber-700 border border-amber-300 font-bold px-3.5 py-2 rounded-xl text-sm transition-colors flex items-center gap-1 shadow-sm">
+              <span>↩️</span> Deshacer Último Par
+            </button>
+            <button id="btnResetBoard" class="bg-white hover:bg-slate-100 text-rose-700 border border-rose-300 font-bold px-3.5 py-2 rounded-xl text-sm transition-colors flex items-center gap-1 shadow-sm">
+              <span>🔄</span> Reiniciar Tablero
+            </button>
+            <button id="btnExportPdf" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-3.5 py-2 rounded-xl text-sm transition-colors flex items-center gap-1 shadow-sm">
+              <span>📄</span> Descargar PDF (A4)
+            </button>
+          </div>
+          <div id="displayFooterInfo" class="text-xs font-medium text-slate-400">
+            Pares descubiertos: 0 de 0
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PANEL 2: SALÓN DE LA FAMA (TOP 10) -->
+      <div id="tabRanking" class="tab-pane hidden space-y-4">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 card-shadow">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                <span>🌟</span> Mejores Puntuaciones Históricas - Sumas Emparejadas
+              </h3>
+              <p class="text-xs text-slate-500">Guardado automáticamente en tu navegador</p>
+            </div>
+            <button id="btnRefreshRanking" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
+              🔄 Actualizar
+            </button>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-sm text-left">
+              <thead class="bg-emerald-600 text-white uppercase text-[11px] font-bold tracking-wider">
+                <tr>
+                  <th class="py-3 px-4 text-center">Pos</th>
+                  <th class="py-3 px-4">Jugador</th>
+                  <th class="py-3 px-4 text-right">Puntos</th>
+                  <th class="py-3 px-4 text-center">Nivel</th>
+                  <th class="py-3 px-4 text-center">Obj</th>
+                  <th class="py-3 px-4 text-center">Pares</th>
+                  <th class="py-3 px-4 text-center">Tiempo</th>
+                  <th class="py-3 px-4 text-center">Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="rankingTableBody">
+                <!-- Se llena dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 3: SOLUCIÓN OFICIAL -->
+      <div id="tabSolution" class="tab-pane hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 card-shadow">
+          <h3 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-1.5">
+            <span>🔍</span> Todas las Parejas Solución
+          </h3>
+          <div class="overflow-hidden flex items-center justify-center min-h-[480px]">
+            <canvas id="solutionCanvas" class="max-w-full block mx-auto"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALES Y NOTIFICACIONES
+       ========================================================================= -->
+
+  <!-- Modal 1: ¡Nuevo Récord en el Top 10! -->
+  <div id="recordModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-emerald-100 text-center transform transition-all">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+        🏆
+      </div>
+      <h3 class="text-2xl font-extrabold text-slate-900 mb-1">¡NUEVO RÉCORD!</h3>
+      <p class="text-xs text-slate-500 mb-4">Has entrado en el Salón de la Fama de Sumas Emparejadas</p>
+
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-5 flex justify-around">
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase block">Puntuación</span>
+          <span id="recordScoreVal" class="text-xl font-extrabold text-emerald-600">0 pts</span>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase block">Tiempo</span>
+          <span id="recordTimeVal" class="text-xl font-extrabold text-slate-800 font-mono">00:00</span>
+        </div>
+      </div>
+
+      <div class="mb-5 text-left">
+        <label for="inputPlayerName" class="block text-xs font-bold text-slate-700 mb-1">Introduce tu Nombre o Alias:</label>
+        <input type="text" id="inputPlayerName" maxlength="18" placeholder="Tu Nombre / Nick" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+      </div>
+
+      <div class="flex gap-2.5">
+        <button id="btnSaveRecord" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl transition-colors shadow-md">
+          💾 Guardar en Ranking
+        </button>
+        <button id="btnCloseRecord" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3 rounded-xl transition-colors">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Victoria Estándar (Todos los Pares Encontrados) -->
+  <div id="victoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 text-center transform transition-all">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+        🎉
+      </div>
+      <h3 class="text-2xl font-extrabold text-slate-900 mb-1">¡TODAS LAS PAREJAS ENCONTRADAS!</h3>
+      <p id="victorySubtitle" class="text-xs text-slate-500 mb-4">Has completado con éxito todo el tablero</p>
+
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-5 flex justify-around">
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase block">Puntos</span>
+          <span id="victoryScoreVal" class="text-xl font-extrabold text-emerald-600">0 pts</span>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase block">Tiempo</span>
+          <span id="victoryTimeVal" class="text-xl font-extrabold text-slate-800 font-mono">00:00</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2.5">
+        <button id="btnPlayAgainVictory" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl transition-colors shadow-md">
+          🎲 Jugar Otro Tablero
+        </button>
+        <button id="btnCloseVictory" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3 rounded-xl transition-colors">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor de Toasts Flotantes -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none max-w-sm"></div>
+
+  <!-- =========================================================================
+       SCRIPTS MODULARES
+       ========================================================================= -->
+  <script src="js/audio-fx.js"></script>
+  <script src="js/ranking.js"></script>
+  <script src="js/hexagon-grid.js"></script>
+  <script src="js/pairs-generator.js"></script>
+  <script src="js/pairs-pdf-export.js"></script>
+  <script src="js/pairs-engine.js"></script>
+  <script src="js/app-pairs.js"></script>
+</body>
+</html>
