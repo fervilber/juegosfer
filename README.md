@@ -12,6 +12,9 @@ Suite de juegos matemáticos interactivos 100% nativos para navegador de **Funny
 2. **🎯 Sumas Emparejadas** (`sumas-emparejadas.html`):
    - Encuentra todas las parejas de hexágonos adyacentes que sumen el valor objetivo.
    - 6 formas geométricas configurables (*Rectángulo, Círculo, Donut, Rombo, Corazón y Casa*), contador de parejas descubiertas, solución interactiva y descarga de PDF A4.
+3. **🧭 HexaTreasure: La Isla Matemática** (`hexatreasure.html`):
+   - Triangula la casilla donde está enterrado el tesoro secreto a partir de las sumas de caminos mínimos desde las balizas (🌴 Palmera, ⛵ Barca, 🦜 Loro, 🪵 Barril, 💀 Calavera).
+   - Herramientas de excavación (⛏️) y descarte (🚩 / ❌), Salón de la Fama, solución oficial y descarga de PDF A4 con pistas impresas al pie (ideal para jugar a lápiz o libros impresos KDP).
 
 ---
 
@@ -51,27 +54,34 @@ Al ser una aplicación web estática pura (HTML + CSS + JS), puedes publicarla g
 
 ```text
 web_app/
-├── index.html                 # 🏠 Portal Principal / Catálogo de Juegos
-├── laberinto.html             # 🌀 Juego: Laberinto de Sumas (v3 con Ranking)
-├── sumas-emparejadas.html     # 🎯 Juego: Sumas Emparejadas (6 Formas + Parejas)
+├── index.html                 # 🏠 Portal Principal / Catálogo de Juegos (3 juegos)
+├── laberinto.html             # 🌀 Juego 1: Laberinto de Sumas
+├── sumas-emparejadas.html     # 🎯 Juego 2: Sumas Emparejadas
+├── hexatreasure.html          # 🧭 Juego 3: HexaTreasure (La Isla Matemática)
 ├── css/
 │   └── styles.css             # Estilos y animaciones personalizadas
 ├── js/
-│   ├── hexagon-grid.js        # Geometría hexagonal (6 formas: Rectángulo, Círculo, Donut, Rombo, Corazón, Casa)
+│   ├── hexagon-grid.js        # Geometría hexagonal (6 formas)
 │   ├── audio-fx.js            # Sintetizador Web Audio API (efectos de sonido nativos)
-│   ├── ranking.js             # Gestor del Salón de la Fama (Top 10 en localStorage)
+│   ├── ranking.js             # Gestor del Salón de la Fama independiente por juego
 │   │
 │   │   /* Módulos de Laberinto */
-│   ├── maze-generator.js      # Generador procedimental de laberintos y sumas
-│   ├── game-engine.js         # Motor de juego interactivo a 60 FPS
+│   ├── maze-generator.js      # Generador procedimental de laberintos
+│   ├── game-engine.js         # Motor interactivo del laberinto
 │   ├── pdf-export.js          # Exportador de PDF A4 para laberintos
 │   ├── app.js                 # Controlador UI del laberinto
 │   │
 │   │   /* Módulos de Sumas Emparejadas */
-│   ├── pairs-generator.js     # Generador de números y detector de soluciones de parejas
-│   ├── pairs-engine.js        # Motor interactivo de selección de parejas contiguas
-│   ├── pairs-pdf-export.js    # Exportador de PDF A4 para Sumas Emparejadas
-│   └── app-pairs.js           # Controlador UI de Sumas Emparejadas
+│   ├── pairs-generator.js     # Generador de parejas
+│   ├── pairs-engine.js        # Motor interactivo de parejas
+│   ├── pairs-pdf-export.js    # Exportador de PDF A4 para parejas
+│   └── app-pairs.js           # Controlador UI de parejas
+│   │
+│   │   /* Módulos de HexaTreasure */
+│   ├── treasure-generator.js  # Generador de triangulación deductiva y unicidad
+│   ├── treasure-engine.js     # Motor interactivo de excavación y marcas
+│   ├── treasure-pdf-export.js # Exportador de PDF A4 con cuadro de pistas
+│   └── app-treasure.js        # Controlador UI de HexaTreasure
 ├── assets/
 │   └── logoFMP.jpg            # Logotipo FunnyMathPlanet
 └── README.md                  # Esta guía de uso

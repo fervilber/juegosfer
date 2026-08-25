@@ -75,48 +75,47 @@
     </div>
 
     <!-- =========================================================================
-         TARJETAS DE SELECCIÓN DE JUEGOS
+         TARJETAS DE SELECCIÓN DE JUEGOS (CATÁLOGO DE 3 JUEGOS)
          ========================================================================= -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
       <!-- JUEGO 1: LABERINTO DE SUMAS -->
       <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
-        <div class="p-6 sm:p-8 space-y-4">
+        <div class="p-6 space-y-4">
           
           <div class="flex justify-between items-start">
-            <div class="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-brand-100">
+            <div class="w-13 h-13 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-brand-100 p-2.5">
               🌀
             </div>
             <span class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-1 rounded-full">
-              🌟 Modo Competitivo Top 10
+              🌟 Popular
             </span>
           </div>
 
           <div>
-            <h2 class="text-2xl font-extrabold text-slate-900 mb-1">
+            <h2 class="text-xl font-extrabold text-slate-900 mb-1">
               Laberinto de Sumas
             </h2>
-            <p class="text-xs text-brand-700 font-semibold uppercase tracking-wider mb-2.5">
-              Camino Aritmético con Puntos Maestros
+            <p class="text-xs text-brand-700 font-semibold uppercase tracking-wider mb-2">
+              Camino con Puntos Maestros
             </p>
-            <p class="text-slate-600 text-sm leading-relaxed">
-              Conecta la casilla de <b>INICIO</b> con la de <b>FINAL</b> avanzando paso a paso por casillas contiguas. Cada tramo debe sumar exactamente el valor objetivo para validar los <b>Puntos Maestros</b>.
+            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+              Conecta <b>INICIO</b> con <b>FINAL</b> sumando tramos exactos de números contiguos para fijar cada Hito.
             </p>
           </div>
 
-          <!-- Badges de características -->
-          <div class="flex flex-wrap gap-1.5 pt-2">
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🏆 Salón de la Fama</span>
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">⏱️ Cronómetro en vivo</span>
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">📄 Descarga PDF A4</span>
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🔊 Sonido sintetizado</span>
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-1 pt-1">
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">🏆 Top 10</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">⏱️ Tiempo</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">📄 PDF A4</span>
           </div>
 
         </div>
 
-        <div class="p-6 sm:p-8 pt-0">
-          <a href="laberinto.html" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 group">
-            <span>🚀 Jugar al Laberinto</span>
+        <div class="p-6 pt-0">
+          <a href="laberinto.html" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group text-sm">
+            <span>🚀 Jugar Laberinto</span>
             <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
           </a>
         </div>
@@ -125,42 +124,84 @@
 
       <!-- JUEGO 2: SUMAS EMPAREJADAS -->
       <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
-        <div class="p-6 sm:p-8 space-y-4">
+        <div class="p-6 space-y-4">
           
           <div class="flex justify-between items-start">
-            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-emerald-100">
+            <div class="w-13 h-13 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-emerald-100 p-2.5">
               🎯
             </div>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">
-              ✨ 6 Formas Geométricas
+              ✨ 6 Formas
             </span>
           </div>
 
           <div>
-            <h2 class="text-2xl font-extrabold text-slate-900 mb-1">
+            <h2 class="text-xl font-extrabold text-slate-900 mb-1">
               Sumas Emparejadas
             </h2>
-            <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wider mb-2.5">
-              Búsqueda y Detección de Parejas Contiguas
+            <p class="text-xs text-emerald-700 font-semibold uppercase tracking-wider mb-2">
+              Detección de Parejas Contiguas
             </p>
-            <p class="text-slate-600 text-sm leading-relaxed">
-              Explora una malla hexagonal con formas como <b>Círculo, Donut, Rombo, Corazón o Casa</b> y descubre todas las parejas de hexágonos adyacentes cuya suma coincida con el valor buscado.
+            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+              Descubre todas las parejas de hexágonos vecinos cuya suma coincida con el objetivo numérico.
             </p>
           </div>
 
-          <!-- Badges de características -->
-          <div class="flex flex-wrap gap-1.5 pt-2">
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🏆 Salón de la Fama</span>
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🔷 6 Formas (Rombo, Donut...)</span>
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">🎯 Contador en Vivo</span>
-            <span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-lg">📄 Descarga PDF A4</span>
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-1 pt-1">
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">🏆 Top 10</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">🔷 Formas</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">📄 PDF A4</span>
           </div>
 
         </div>
 
-        <div class="p-6 sm:p-8 pt-0">
-          <a href="sumas-emparejadas.html" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 group">
-            <span>🎯 Jugar a Sumas Emparejadas</span>
+        <div class="p-6 pt-0">
+          <a href="sumas-emparejadas.html" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group text-sm">
+            <span>🎯 Jugar Emparejadas</span>
+            <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- JUEGO 3: HEXATREASURE (LA ISLA MATEMÁTICA) -->
+      <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
+        <div class="p-6 space-y-4">
+          
+          <div class="flex justify-between items-start">
+            <div class="w-13 h-13 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-amber-100 p-2.5">
+              🧭
+            </div>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">
+              🏴‍☠️ ¡Nuevo!
+            </span>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900 mb-1">
+              HexaTreasure
+            </h2>
+            <p class="text-xs text-amber-700 font-semibold uppercase tracking-wider mb-2">
+              Triangulación Deductiva
+            </p>
+            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+              Usa las pistas de sumas mínimas desde las balizas (🌴, ⛵, 🦜...) para desenterrar el tesoro secreto.
+            </p>
+          </div>
+
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-1 pt-1">
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">🏆 Top 10</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">⛏️ Excavación</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">📄 PDF A4</span>
+          </div>
+
+        </div>
+
+        <div class="p-6 pt-0">
+          <a href="hexatreasure.html" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group text-sm">
+            <span>💎 Jugar HexaTreasure</span>
             <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
           </a>
         </div>

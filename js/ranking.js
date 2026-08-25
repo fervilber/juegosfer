@@ -112,3 +112,11 @@ window.pairsRankingManager = new RankingManager('fmp_ranking_pairs_v1', [
   { posicion: 4, nombre: "Gauss_Jr", puntos: 6900, dificultad: "Medio", objetivo: 14, celdas: 64, hitos: 6, tiempo: "01:50", tiempoSeg: 110, fecha: "2026-08-24" },
   { posicion: 5, nombre: "Clara_Math", puntos: 5100, dificultad: "Fácil", objetivo: 10, celdas: 36, hitos: 4, tiempo: "00:48", tiempoSeg: 48, fecha: "2026-08-25" }
 ]);
+
+window.treasureRankingManager = new RankingManager('fmp_ranking_treasure_v1', [
+  { posicion: 1, nombre: "BarbaPlata", puntos: 15400, dificultad: "Corsario (Experto)", objetivo: "4 Balizas", celdas: 160, hitos: 1, tiempo: "01:12", tiempoSeg: 72, fecha: "2026-08-22" },
+  { posicion: 2, nombre: "IslaSeeker", puntos: 12200, dificultad: "Capitán (Difícil)", objetivo: "4 Balizas", celdas: 120, hitos: 1, tiempo: "01:35", tiempoSeg: 95, fecha: "2026-08-23" },
+  { posicion: 3, nombre: "JackSparrow", puntos: 9800, dificultad: "Marinero (Medio)", objetivo: "3 Balizas", celdas: 75, hitos: 1, tiempo: "01:05", tiempoSeg: 65, fecha: "2026-08-24" },
+  { posicion: 4, nombre: "DeductionPro", puntos: 7900, dificultad: "Marinero (Medio)", objetivo: "3 Balizas", celdas: 75, hitos: 2, tiempo: "01:50", tiempoSeg: 110, fecha: "2026-08-24" },
+  { posicion: 5, nombre: "Grumete_Sam", puntos: 5600, dificultad: "Grumete (Fácil)", objetivo: "3 Balizas", celdas: 45, hitos: 1, tiempo: "00:42", tiempoSeg: 42, fecha: "2026-08-25" }
+]);
