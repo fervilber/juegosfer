@@ -1,6 +1,7 @@
 /**
  * =============================================================================
  * APP TREASURE CONTROLLER - Controlador de UI para HexaTreasure
+ * Soporta escala de terreno, pistas deductivas por nivel y Salón de la Fama
  * =============================================================================
  */
 
@@ -81,13 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (selected === "grumete") {
-      return { cols: 7, rows: 7, pois: 3, maxVal: 6, shape: 0, label: "Grumete (Fácil)" };
+      return { cols: 7, rows: 7, pois: 3, maxVal: 6, shape: 0, showSteps: true, allowWater: false, label: "Grumete (Fácil)" };
     } else if (selected === "marinero") {
-      return { cols: 9, rows: 9, pois: 3, maxVal: 9, shape: 1, label: "Marinero (Medio)" };
+      return { cols: 9, rows: 9, pois: 3, maxVal: 9, shape: 1, showSteps: false, allowWater: true, label: "Marinero (Medio)" };
     } else if (selected === "capitan") {
-      return { cols: 12, rows: 12, pois: 4, maxVal: 9, shape: 3, label: "Capitán (Difícil)" };
+      return { cols: 12, rows: 12, pois: 4, maxVal: 10, shape: 3, showSteps: false, allowWater: true, label: "Capitán (Difícil)" };
     } else if (selected === "corsario") {
-      return { cols: 14, rows: 14, pois: 4, maxVal: 12, shape: 2, label: "Corsario (Experto)" };
+      return { cols: 14, rows: 14, pois: 4, maxVal: 12, shape: 2, showSteps: false, allowWater: true, label: "Corsario (Experto)" };
     } else {
       return {
         cols: parseInt(inputCols.value, 10) || 9,
@@ -95,6 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         pois: parseInt(inputPois.value, 10) || 3,
         maxVal: parseInt(inputMaxVal.value, 10) || 9,
         shape: parseInt(inputShape.value, 10) || 1,
+        showSteps: false,
+        allowWater: true,
         label: "Personalizado"
       };
     }
@@ -103,9 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function startNewGame() {
     const config = getSelectedPresetConfig();
     const grid = new HexGrid(config.cols, config.rows, config.shape);
-    currentGameData = TreasureGenerator.generate(grid, config.pois, config.maxVal, false);
+    currentGameData = TreasureGenerator.generate(grid, config.pois, config.maxVal, config.showSteps, config.allowWater);
     engine.startNewGame(currentGameData, config.label);
-    renderClues(currentGameData.clues);
+    renderClues(currentGameData.clues, config.showSteps);
   }
 
   difficultyRadios.forEach(radio => {
@@ -141,16 +144,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===========================================================================
-  // RENDERIZADO DE PISTAS
+  // RENDERIZADO DE PISTAS (ADAPTADAS POR NIVEL)
   // ===========================================================================
-  function renderClues(clues) {
+  function renderClues(clues, showSteps = false) {
     if (!cluesList) return;
     cluesList.innerHTML = '';
 
-    clues.forEach((clue, idx) => {
+    clues.forEach((clue) => {
       const card = document.createElement('div');
-      card.className = "bg-white p-3.5 rounded-xl border border-slate-200 hover:border-emerald-400 cursor-pointer transition-all shadow-sm flex items-center justify-between gap-3 group";
-      card.setAttribute('title', 'Haz clic para iluminar el radio estimado de esta baliza en el mapa');
+      card.className = "bg-white p-3.5 rounded-xl border border-slate-200 hover:border-amber-400 cursor-pointer transition-all shadow-sm flex items-center justify-between gap-3 group";
+      card.setAttribute('title', showSteps ? 'Haz clic para iluminar el radio de esta baliza' : 'Ruta de suma mínima desde esta baliza');
+
+      const distanceSubtitle = showSteps
+        ? `<span class="text-xs text-slate-500 font-medium">Distancia: <b class="text-slate-700 font-mono">${clue.steps} pasos</b></span>`
+        : `<span class="text-[11px] text-slate-500 font-medium">Ruta más corta (camino mínimo)</span>`;
 
       card.innerHTML = `
         <div class="flex items-center gap-3">
@@ -158,13 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ${clue.poi.icon}
           </div>
           <div>
-            <span class="font-bold text-slate-800 text-sm block group-hover:text-emerald-700 transition-colors">${clue.poi.name}</span>
-            <span class="text-xs text-slate-500 font-medium">Distancia: <b class="text-slate-700 font-mono">${clue.steps} pasos</b></span>
+            <span class="font-bold text-slate-800 text-sm block group-hover:text-amber-700 transition-colors">${clue.poi.name}</span>
+            ${distanceSubtitle}
           </div>
         </div>
-        <div class="text-right bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-          <span class="text-[9px] font-bold text-emerald-800 uppercase block">SUMA RUTA</span>
-          <span class="text-lg font-black text-emerald-700 font-mono">${clue.sum}</span>
+        <div class="text-right bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl">
+          <span class="text-[9px] font-bold text-amber-800 uppercase block">SUMA RUTA</span>
+          <span class="text-lg font-black text-amber-700 font-mono">${clue.sum}</span>
         </div>
       `;
 
@@ -290,8 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
       tr.innerHTML = `
         <td class="py-3 px-4 text-center font-bold">${medal}</td>
         <td class="py-3 px-4 font-bold text-slate-800">${item.nombre}</td>
-        <td class="py-3 px-4 text-right font-extrabold text-emerald-600">${item.puntos.toLocaleString()}</td>
-        <td class="py-3 px-4 text-center"><span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded-md font-semibold">${item.dificultad}</span></td>
+        <td class="py-3 px-4 text-right font-extrabold text-amber-600">${item.puntos.toLocaleString()}</td>
+        <td class="py-3 px-4 text-center"><span class="bg-amber-50 text-amber-700 text-xs px-2 py-0.5 rounded-md font-semibold">${item.dificultad}</span></td>
         <td class="py-3 px-4 text-center font-bold text-slate-700">${item.objetivo}</td>
         <td class="py-3 px-4 text-center font-bold text-slate-700">${item.hitos}</td>
         <td class="py-3 px-4 text-center font-mono text-xs text-slate-600">${item.tiempo}</td>
@@ -340,10 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabButtons.forEach(btn => {
       if (btn.getAttribute('data-tab-target') === targetId) {
-        btn.classList.add('border-brand-600', 'text-brand-700', 'bg-brand-50');
+        btn.classList.add('border-amber-600', 'text-amber-700', 'bg-amber-50');
         btn.classList.remove('border-transparent', 'text-slate-600');
       } else {
-        btn.classList.remove('border-brand-600', 'text-brand-700', 'bg-brand-50');
+        btn.classList.remove('border-amber-600', 'text-amber-700', 'bg-amber-50');
         btn.classList.add('border-transparent', 'text-slate-600');
       }
     });
@@ -400,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2800);
   }
 
-  // Inicializar ranking y comenzar primer juego
   renderRankingTable();
   startNewGame();
 });

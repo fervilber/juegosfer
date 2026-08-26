@@ -12,7 +12,7 @@ Suite de juegos matemáticos interactivos 100% nativos para navegador de **Funny
 2. **🎯 Sumas Emparejadas** (`sumas-emparejadas.html`):
    - Encuentra todas las parejas de hexágonos adyacentes que sumen el valor objetivo.
    - 6 formas geométricas configurables (*Rectángulo, Círculo, Donut, Rombo, Corazón y Casa*), contador de parejas descubiertas, solución interactiva y descarga de PDF A4.
-3. **🧭 HexaTreasure: La Isla Matemática** (`hexatreasure.html`):
+3. **🧭 Busca el Tesoro: La Isla Matemática** (`hexatreasure.html`):
    - Triangula la casilla donde está enterrado el tesoro secreto a partir de las sumas de caminos mínimos desde las balizas (🌴 Palmera, ⛵ Barca, 🦜 Loro, 🪵 Barril, 💀 Calavera).
    - Herramientas de excavación (⛏️) y descarte (🚩 / ❌), Salón de la Fama, solución oficial y descarga de PDF A4 con pistas impresas al pie (ideal para jugar a lápiz o libros impresos KDP).
 
@@ -57,7 +57,7 @@ web_app/
 ├── index.html                 # 🏠 Portal Principal / Catálogo de Juegos (3 juegos)
 ├── laberinto.html             # 🌀 Juego 1: Laberinto de Sumas
 ├── sumas-emparejadas.html     # 🎯 Juego 2: Sumas Emparejadas
-├── hexatreasure.html          # 🧭 Juego 3: HexaTreasure (La Isla Matemática)
+├── hexatreasure.html          # 🧭 Juego 3: Busca el Tesoro (La Isla Matemática)
 ├── css/
 │   └── styles.css             # Estilos y animaciones personalizadas
 ├── js/

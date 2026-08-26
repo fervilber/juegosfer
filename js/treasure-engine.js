@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * TREASURE ENGINE - Motor Interactivo para HexaTreasure (Canvas 60 FPS)
- * Gestión de excavación, marcas de descarte (🚩/❌), pistas y animaciones
+ * Soporta escala de terreno/cotas, agua (0), herramientas y pistas por nivel
  * =============================================================================
  */
 
@@ -27,7 +27,7 @@ class TreasureEngine {
 
     // Métricas y puntuación
     this.attemptsCount = 0;
-    this.marks = new Map(); // id -> 'flag' | 'discard' | 'dug'
+    this.marks = new Map(); // id -> 'flag' | 'discard' | 'dug' | 'treasure'
     this.startTime = null;
     this.elapsedSec = 0;
     this.timerInterval = null;
@@ -83,19 +83,47 @@ class TreasureEngine {
 
   calculateLiveScore(isVictory = false) {
     if (!this.gameData) return 0;
-    const baseVictoria = isVictory ? 5000 : 0;
-    const penalizacionIntentos = Math.max(0, this.attemptsCount * 400);
 
-    const nCeldas = this.gameData.grid.hexList.length;
-    const nBalizas = this.gameData.pois.length;
+    // 1. Puntuación Base Inicial según dificultad
+    let baseDificultad = 10000;
+    if (this.difficulty.includes("Grumete") || this.difficulty.includes("Fácil")) {
+      baseDificultad = 6000;
+    } else if (this.difficulty.includes("Marinero") || this.difficulty.includes("Medio")) {
+      baseDificultad = 10000;
+    } else if (this.difficulty.includes("Capitán") || this.difficulty.includes("Difícil")) {
+      baseDificultad = 14000;
+    } else if (this.difficulty.includes("Corsario") || this.difficulty.includes("Experto")) {
+      baseDificultad = 18000;
+    } else {
+      const nCeldas = this.gameData.grid.hexList.length;
+      baseDificultad = 8000 + (nCeldas * 40);
+    }
 
-    const multiplicadorTam = 1 + (nCeldas / 70);
-    const multiplicadorBalizas = 1 + (nBalizas * 0.15);
+    // 2. Penalización estricta por cada intento fallido de excavar (-1.500 pts por fallo)
+    const penalizacionFallos = this.attemptsCount * 1500;
 
-    const subtotal = Math.max(500, (baseVictoria - penalizacionIntentos) * multiplicadorTam * multiplicadorBalizas);
-    const bonusTiempo = isVictory ? Math.max(0, (180 - this.elapsedSec) * 15) : 0;
+    // 3. Descuento leve por tiempo en vivo (5 pts por segundo)
+    const descuentoTiempo = this.elapsedSec * 5;
 
-    return Math.round(subtotal + bonusTiempo);
+    // 4. Bono de Precisión al desenterrar el tesoro
+    let bonoPrecision = 0;
+    if (isVictory) {
+      if (this.attemptsCount === 0) {
+        bonoPrecision = 5000; // ¡Acierto a la primera! Bono Deducción Perfecta
+      } else if (this.attemptsCount === 1) {
+        bonoPrecision = 2000; // 1 fallo
+      } else if (this.attemptsCount === 2) {
+        bonoPrecision = 500;  // 2 fallos
+      }
+    }
+
+    // 5. Bono de Tiempo al completar rápido
+    const bonusTiempoRestante = isVictory ? Math.max(0, (180 - this.elapsedSec) * 10) : 0;
+
+    const totalCalculado = baseDificultad - penalizacionFallos - descuentoTiempo + bonoPrecision + bonusTiempoRestante;
+    
+    // Si aún está jugando, puede bajar a 0 o negativo para mostrar la pérdida; en victoria el mínimo es 100 pts
+    return isVictory ? Math.max(100, Math.round(totalCalculado)) : Math.round(baseDificultad - penalizacionFallos - descuentoTiempo);
   }
 
   notifyState() {
@@ -114,10 +142,30 @@ class TreasureEngine {
       difficulty: this.difficulty,
       clues: this.gameData ? this.gameData.clues : [],
       pois: this.gameData ? this.gameData.pois : [],
-      totalHexes: this.gameData ? this.gameData.grid.hexList.length : 0
+      totalHexes: this.gameData ? this.gameData.grid.hexList.length : 0,
+      showSteps: this.gameData ? this.gameData.showSteps : false
     });
 
     this.render();
+  }
+
+  // ===========================================================================
+  // PALETA TOPOGRÁFICA (COTAS DE TERRENO Y AGUA)
+  // ===========================================================================
+  static getTerrainStyle(value) {
+    if (value === 0) {
+      return { bg: "#e0f2fe", border: "#7dd3fc", text: "#0284c7", isWater: true }; // Agua / Costa
+    }
+    if (value <= 3) {
+      return { bg: "#fef9c3", border: "#fde047", text: "#854d0e", isWater: false }; // Costa / Arena
+    }
+    if (value <= 6) {
+      return { bg: "#dcfce7", border: "#86efac", text: "#166534", isWater: false }; // Llanura / Selva verde
+    }
+    if (value <= 9) {
+      return { bg: "#fed7aa", border: "#fdba74", text: "#9a3412", isWater: false }; // Colina media
+    }
+    return { bg: "#e2e8f0", border: "#94a3b8", text: "#334155", isWater: false }; // Cumbre / Roca alta
   }
 
   // ===========================================================================
@@ -131,13 +179,12 @@ class TreasureEngine {
       this.render();
     });
 
-    // Clic derecho para alternar marcas rápidas (Bandera 🚩)
     this.canvas.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       if (!this.gameData || this.isWon) return;
       const { x, y } = this.getCanvasCoords(e);
       const hex = this.gameData.grid.getHexAtPoint(x, y);
-      if (hex && !hex.isPOI) {
+      if (hex && !hex.isPOI && hex.value > 0) {
         this.toggleFlag(hex);
       }
     });
@@ -170,14 +217,13 @@ class TreasureEngine {
 
   handlePointerDown(e) {
     if (!this.gameData || this.isWon) return;
-    if (e.button === 2) return; // Gestionado por contextmenu
+    if (e.button === 2) return;
 
     const { x, y } = this.getCanvasCoords(e);
     const hex = this.gameData.grid.getHexAtPoint(x, y);
     if (!hex) return;
 
     if (hex.isPOI) {
-      // Al pulsar un POI, resaltar sus pistas
       this.highlightedPOI = (this.highlightedPOI && this.highlightedPOI.id === hex.id) ? null : hex.poiData;
       window.soundFx.playStep();
       this.render();
@@ -229,6 +275,12 @@ class TreasureEngine {
   }
 
   processDig(hex) {
+    if (hex.value === 0) {
+      this.onToast("🌊 ¡No puedes cavar en el agua! El tesoro está enterrado en tierra firme.", "warning");
+      window.soundFx.playError();
+      return;
+    }
+
     if (this.marks.get(hex.id) === 'dug') {
       this.onToast("Ya has excavado en esta casilla anteriormente.", "info");
       return;
@@ -253,17 +305,17 @@ class TreasureEngine {
         numPOIs: this.gameData.pois.length
       });
     } else {
-      // Excavación fallida
+      // Excavación fallida: penalización fuerte de -1.500 pts
       this.attemptsCount++;
       this.marks.set(hex.id, 'dug');
+      this.currentScore = this.calculateLiveScore(false);
       window.soundFx.playError();
 
-      // Generar pista de discrepancia con el primer POI
       const firstPOI = this.gameData.pois[0];
-      const actualPath = TreasureGenerator.findShortestPath(firstPOI.hex, hex, this.gameData.straightLineOnly);
+      const actualPath = TreasureGenerator.findShortestPath(firstPOI.hex, hex);
       const expectedClue = this.gameData.clues[0];
 
-      this.onToast(`⛏️ ¡Aquí no hay tesoro! (Suma desde ${firstPOI.name}: ${actualPath.sum} vs ${expectedClue.sum} de la pista)`, "warning");
+      this.onToast(`⛏️ ¡Tierra vacía! (-1.500 pts) | Suma desde ${firstPOI.name}: ${actualPath.sum} (pista: ${expectedClue.sum})`, "error");
       this.notifyState();
     }
   }
@@ -311,10 +363,11 @@ class TreasureEngine {
 
     const grid = this.gameData.grid;
 
-    // 1. Dibujar hexágonos
+    // 1. Dibujar hexágonos con cotas topográficas
     for (const hex of grid.hexList) {
       const corners = grid.getHexCorners(hex);
       const mark = this.marks.get(hex.id);
+      const terrain = TreasureEngine.getTerrainStyle(hex.value);
 
       ctx.beginPath();
       ctx.moveTo(corners[0].x, corners[0].y);
@@ -333,7 +386,7 @@ class TreasureEngine {
         ctx.strokeStyle = "#ca8a04";
         ctx.lineWidth = 3.5;
       } else if (mark === 'dug') {
-        ctx.fillStyle = "#e2e8f0"; // Excavado / arena removida
+        ctx.fillStyle = "#e2e8f0"; // Excavado
         ctx.strokeStyle = "#94a3b8";
         ctx.lineWidth = 1.2;
       } else if (mark === 'flag') {
@@ -353,15 +406,15 @@ class TreasureEngine {
         ctx.strokeStyle = "#64748b";
         ctx.lineWidth = 1.8;
       } else {
-        ctx.fillStyle = "#f8fafc";
-        ctx.strokeStyle = "#cbd5e1";
+        ctx.fillStyle = terrain.bg;
+        ctx.strokeStyle = terrain.border;
         ctx.lineWidth = 1.2;
       }
 
       ctx.fill();
       ctx.stroke();
 
-      // Contenido central (Icono POI, Marcador o Número)
+      // Contenido central
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
@@ -383,15 +436,20 @@ class TreasureEngine {
         ctx.font = "bold 15px sans-serif";
         ctx.fillStyle = "#64748b";
         ctx.fillText(`🕳️ ${hex.value}`, hex.x, hex.y);
+      } else if (hex.value === 0) {
+        // Casilla de agua
+        ctx.font = `bold ${Math.max(13, Math.round(grid.size * 0.48))}px Inter, sans-serif`;
+        ctx.fillStyle = "#0284c7";
+        ctx.fillText("0", hex.x, hex.y);
       } else {
-        ctx.fillStyle = "#1e293b";
+        ctx.fillStyle = terrain.text;
         ctx.font = `bold ${Math.max(14, Math.round(grid.size * 0.52))}px Inter, sans-serif`;
         ctx.fillText(hex.value.toString(), hex.x, hex.y);
       }
     }
 
-    // 2. Si hay un POI resaltado, trazar arco de distancia estimada
-    if (this.highlightedPOI) {
+    // 2. Solo dibujar círculo de distancia en Nivel 1 (Grumete / showSteps === true)
+    if (this.highlightedPOI && this.gameData.showSteps) {
       const clue = this.gameData.clues.find(c => c.poi.id === this.highlightedPOI.id);
       if (clue) {
         ctx.save();
@@ -399,7 +457,6 @@ class TreasureEngine {
         ctx.lineWidth = 2.5;
         ctx.setLineDash([5, 5]);
 
-        // Dibujar círculo aproximado del radio
         const approxRadius = clue.steps * grid.size * Math.sqrt(3);
         ctx.beginPath();
         ctx.arc(this.highlightedPOI.hex.x, this.highlightedPOI.hex.y, approxRadius, 0, 2 * Math.PI);

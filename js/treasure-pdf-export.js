@@ -1,6 +1,7 @@
 /**
  * =============================================================================
  * TREASURE PDF EXPORTER - Generador de Documentos PDF A4 para HexaTreasure
+ * Soporta escala de terreno topográfica, pistas según nivel y solución gráfica
  * =============================================================================
  */
 
@@ -35,8 +36,8 @@ class TreasurePDFExporter {
     // =========================================================================
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
-    doc.setTextColor(6, 78, 59);
-    doc.text("HexaTreasure: La Isla Matemática", pageWidth / 2, 20, { align: 'center' });
+    doc.setTextColor(180, 83, 9); // Ámbar oscuro
+    doc.text("Busca el Tesoro: La Isla Matemática", pageWidth / 2, 20, { align: 'center' });
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
@@ -53,22 +54,23 @@ class TreasurePDFExporter {
 
     // Cuadro de Pistas
     const boxY = 32 + imgHeight + 6;
-    doc.setFillColor(248, 250, 252);
-    doc.setDrawColor(203, 213, 225);
+    doc.setFillColor(254, 243, 199); // Ámbar muy suave
+    doc.setDrawColor(251, 191, 36);
     doc.roundedRect(18, boxY, pageWidth - 36, 48, 3, 3, "FD");
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.setTextColor(15, 23, 42);
-    doc.text("📜 PISTAS DE TRIANGULACIÓN (Ruta más corta en pasos):", 24, boxY + 8);
+    doc.setTextColor(120, 53, 15);
+    doc.text("📜 PISTAS DE TRIANGULACIÓN (Ruta de suma mínima más corta):", 24, boxY + 8);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(51, 65, 85);
 
     let clueOffset = 0;
-    gameData.clues.forEach((clue, idx) => {
-      const poiText = `${clue.poi.icon} ${clue.poi.name}: El tesoro se encuentra a una ruta de SUMA ${clue.sum} (${clue.steps} pasos de distancia).`;
+    gameData.clues.forEach((clue) => {
+      const stepText = gameData.showSteps ? ` (${clue.steps} pasos de distancia)` : ` (camino mínimo)`;
+      const poiText = `${clue.poi.icon} ${clue.poi.name}: El tesoro se encuentra a una ruta de SUMA ${clue.sum}${stepText}.`;
       doc.text(poiText, 24, boxY + 16 + clueOffset);
       clueOffset += 7;
     });
@@ -85,7 +87,7 @@ class TreasurePDFExporter {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
-    doc.setTextColor(6, 78, 59);
+    doc.setTextColor(180, 83, 9);
     doc.text("Solución Oficial - Ubicación del Tesoro", pageWidth / 2, 20, { align: 'center' });
 
     doc.setFont("helvetica", "normal");
@@ -126,11 +128,11 @@ class TreasurePDFExporter {
     doc.setTextColor(148, 163, 184);
     doc.text("FunnyMathPlanet - www.funnymathplanet.com", pageWidth / 2, pageHeight - 10, { align: 'center' });
 
-    doc.save(`hexatreasure_${difficultyLabel.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`);
+    doc.save(`busca_el_tesoro_${difficultyLabel.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`);
   }
 
   /**
-   * Dibuja el tablero en un contexto 2D de Canvas
+   * Dibuja el tablero en un contexto 2D de Canvas con cotas de terreno
    */
   static drawBoardToCanvas(ctx, width, height, gameData, isSolution = false) {
     const grid = gameData.grid;
@@ -139,7 +141,6 @@ class TreasurePDFExporter {
     const renderGrid = new HexGrid(grid.cols, grid.rows, grid.shape);
     renderGrid.fitToDimensions(width, height, 40);
 
-    // Mapear valores, POIs y tesoro
     for (let i = 0; i < grid.hexList.length; i++) {
       const src = grid.hexList[i];
       const dst = renderGrid.hexList[i];
@@ -152,9 +153,10 @@ class TreasurePDFExporter {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, width, height);
 
-    // 1. Dibujar hexágonos
+    // 1. Dibujar hexágonos con colores topográficos
     for (const hex of renderGrid.hexList) {
       const corners = renderGrid.getHexCorners(hex);
+      const terrain = TreasureEngine.getTerrainStyle(hex.value);
 
       ctx.beginPath();
       ctx.moveTo(corners[0].x, corners[0].y);
@@ -172,8 +174,8 @@ class TreasurePDFExporter {
         ctx.strokeStyle = "#ca8a04";
         ctx.lineWidth = 3.5;
       } else {
-        ctx.fillStyle = "#f8fafc";
-        ctx.strokeStyle = "#cbd5e1";
+        ctx.fillStyle = terrain.bg;
+        ctx.strokeStyle = terrain.border;
         ctx.lineWidth = 1.2;
       }
 
@@ -190,8 +192,12 @@ class TreasurePDFExporter {
       } else if (isSolution && hex.id === gameData.treasureHex.id) {
         ctx.font = `${Math.round(renderGrid.size * 0.85)}px sans-serif`;
         ctx.fillText("💎", hex.x, hex.y);
+      } else if (hex.value === 0) {
+        ctx.font = `bold ${Math.max(14, Math.round(renderGrid.size * 0.48))}px Inter, sans-serif`;
+        ctx.fillStyle = "#0284c7";
+        ctx.fillText("0", hex.x, hex.y);
       } else {
-        ctx.fillStyle = "#334155";
+        ctx.fillStyle = terrain.text;
         ctx.font = `bold ${Math.max(16, Math.round(renderGrid.size * 0.52))}px Inter, sans-serif`;
         ctx.fillText(hex.value.toString(), hex.x, hex.y);
       }
