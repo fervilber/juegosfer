@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Porra - Fábrica y Generador de Apuestas</title>
+  <meta name="description" content="Crea, personaliza y comparte porras y apuestas colectivas de fechas, resultados de partidos y números.">
+
+  <!-- Fuente Inter desde Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS vía CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      -webkit-font-smoothing: antialiased;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- =========================================================================
+       CABECERA PRINCIPAL
+       ========================================================================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Marca y Retorno al Portal -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 group text-slate-500 hover:text-slate-800 transition-colors" title="Volver al portal FunnyMathPlanet">
+          <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200 group-hover:bg-slate-200 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </div>
+        </a>
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-black text-lg shadow-sm">
+            ⬡
+          </div>
+          <div>
+            <h1 class="text-base font-bold text-slate-800 leading-tight">La Porra</h1>
+            <span class="text-xs text-slate-400 font-medium">Fábrica de Apuestas Colectivas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones Globales de Cabecera -->
+      <div class="flex items-center gap-2">
+        <button id="headerBtnNewPorra" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-all">
+          <span>✨</span>
+          <span>Crear Nueva Porra</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       CONTENIDO PRINCIPAL
+       ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- -----------------------------------------------------------------------
+         VISTA 1: HUB CREADOR DE PORRAS (SELECTOR Y FORMULARIOS)
+         ----------------------------------------------------------------------- -->
+    <div id="creatorHubView" class="max-w-3xl mx-auto space-y-8 animate-fadeIn">
+      
+      <!-- Presentación -->
+      <div class="text-center space-y-2">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">Fábrica de Porras</h2>
+        <p class="text-sm text-slate-500 max-w-lg mx-auto">
+          Crea una porra personalizada para tu grupo, genera un archivo o enlace independiente y compártelo fácilmente.
+        </p>
+      </div>
+
+      <!-- Selector de Tipo de Porra (3 Modos) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="typeSelectorCards">
+        
+        <!-- Opción 1: Fechas -->
+        <div data-type="fechas" class="porra-type-card relative p-5 rounded-2xl bg-white border-2 border-brand-500 shadow-sm cursor-pointer transition-all hover:shadow-md">
+          <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">1. Porra de Fechas</h3>
+          <p class="text-xs text-slate-500 mt-1">¿Qué día ocurrirá el evento? Tablero hexagonal de días para nacimientos, inauguraciones o viajes.</p>
+        </div>
+
+        <!-- Opción 2: Resultados -->
+        <div data-type="resultados" class="porra-type-card relative p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm cursor-pointer transition-all hover:shadow-md hover:border-slate-300">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">2. Porra de Resultados</h3>
+          <p class="text-xs text-slate-500 mt-1">Enfrentamiento entre dos equipos. Marcadores compartidos con premio repartido entre acertantes.</p>
+        </div>
+
+        <!-- Opción 3: Números -->
+        <div data-type="numeros" class="porra-type-card relative p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm cursor-pointer transition-all hover:shadow-md hover:border-slate-300">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+            </svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">3. Porra Numérica</h3>
+          <p class="text-xs text-slate-500 mt-1">Tablero hexagonal numerado del inicio al fin (ej. 0 al 99 o 1 al 100) para cestas y sorteos.</p>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           FORMULARIOS DE CONFIGURACIÓN
+           ===================================================================== -->
+      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+        
+        <!-- Título General de la Porra -->
+        <div>
+          <label for="inputEventTitle" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+            Título / Nombre de la Porra *
+          </label>
+          <input 
+            type="text" 
+            id="inputEventTitle" 
+            value="Porra del Nacimiento" 
+            placeholder="Ej: Nacimiento de Mateo, Clásico Madrid-Barça, Cesta de Navidad..."
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+          >
+        </div>
+
+        <!-- Bote o Premio (Común a todos) -->
+        <div>
+          <label for="inputEventPrize" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+            Premio o Bote (Opcional)
+          </label>
+          <input 
+            type="text" 
+            id="inputEventPrize" 
+            placeholder="Ej: 50€, Cena pagada, Cesta Gourmet..."
+            class="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+          >
+        </div>
+
+        <!-- -------------------------------------------------------------------
+             CAMPOS ESPECÍFICOS: MODO FECHAS
+             ------------------------------------------------------------------- -->
+        <div id="fieldsFechas" class="space-y-5 border-t border-slate-100 pt-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="inputStartDate" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                Fecha Inicial
+              </label>
+              <input type="date" id="inputStartDate" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label for="inputEndDate" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                Fecha Final
+              </label>
+              <input type="date" id="inputEndDate" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+              Días a incluir en el tablero hexagonal
+            </label>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors text-xs font-medium text-slate-700 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 has-[:checked]:text-brand-800">
+                <input type="radio" name="datesDayFilter" value="all" checked class="hidden">
+                <span>Todos los días</span>
+              </label>
+              <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors text-xs font-medium text-slate-700 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 has-[:checked]:text-brand-800">
+                <input type="radio" name="datesDayFilter" value="weekdays" class="hidden">
+                <span>Laborables (L-V)</span>
+              </label>
+              <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors text-xs font-medium text-slate-700 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 has-[:checked]:text-brand-800">
+                <input type="radio" name="datesDayFilter" value="weekends" class="hidden">
+                <span>Fines de semana</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 flex items-center justify-between text-xs">
+            <span class="font-medium text-slate-500">Tamaño del tablero:</span>
+            <span id="datesCalcSummary" class="font-bold text-slate-800">61 casillas hexagonales</span>
+          </div>
+        </div>
+
+        <!-- -------------------------------------------------------------------
+             CAMPOS ESPECÍFICOS: MODO RESULTADOS (PARTIDO)
+             ------------------------------------------------------------------- -->
+        <div id="fieldsResultados" class="hidden space-y-5 border-t border-slate-100 pt-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="inputHomeTeam" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                Equipo Local *
+              </label>
+              <input 
+                type="text" 
+                id="inputHomeTeam" 
+                value="Real Madrid" 
+                placeholder="Nombre del equipo local"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+            </div>
+            <div>
+              <label for="inputAwayTeam" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                Equipo Visitante *
+              </label>
+              <input 
+                type="text" 
+                id="inputAwayTeam" 
+                value="FC Barcelona" 
+                placeholder="Nombre del equipo visitante"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center gap-3">
+            <span class="text-xl">🤝</span>
+            <p class="text-xs text-indigo-900 leading-relaxed">
+              <strong>Premios Compartidos:</strong> En este modo, si varios participantes eligen el mismo resultado exacto (ej. 2 - 1) y resulta ser el marcador final, el premio o bote se repartirá equitativamente entre ellos.
+            </p>
+          </div>
+        </div>
+
+        <!-- -------------------------------------------------------------------
+             CAMPOS ESPECÍFICOS: MODO NÚMEROS
+             ------------------------------------------------------------------- -->
+        <div id="fieldsNumeros" class="hidden space-y-5 border-t border-slate-100 pt-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="inputStartNum" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                Número Inicial
+              </label>
+              <input 
+                type="number" 
+                id="inputStartNum" 
+                value="0" 
+                min="0" 
+                max="999"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+            </div>
+            <div>
+              <label for="inputEndNum" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                Número Final
+              </label>
+              <input 
+                type="number" 
+                id="inputEndNum" 
+                value="99" 
+                min="1" 
+                max="999"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 flex items-center justify-between text-xs">
+            <span class="font-medium text-slate-500">Total de números en la porra:</span>
+            <span id="numbersCalcSummary" class="font-bold text-slate-800">100 números (del 0 al 99)</span>
+          </div>
+        </div>
+
+        <!-- Botones de Acción: Generar / Ver / Descargar -->
+        <div class="pt-3 flex flex-col sm:flex-row gap-3">
+          <button 
+            id="btnBuildPorra" 
+            type="button" 
+            class="flex-1 py-3.5 px-6 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+          >
+            <span>Generar y Abrir Porra</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- -----------------------------------------------------------------------
+         VISTA 2: PÁGINA INDEPENDIENTE DE LA PORRA GENERADA
+         ----------------------------------------------------------------------- -->
+    <div id="activePorraView" class="hidden space-y-6 animate-fadeIn">
+      
+      <!-- Barra de Control Superior y Opciones de Compartir -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2.5">
+              <button id="btnBackToHub" class="text-slate-400 hover:text-slate-700 transition-colors p-1.5 -ml-1 rounded-xl hover:bg-slate-100" title="Volver a la Fábrica de Porras">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 id="activePorraTitle" class="text-lg sm:text-2xl font-extrabold text-slate-800 tracking-tight"></h2>
+                  <span id="activePorraTypeBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"></span>
+                </div>
+                <p id="activePorraSubtitle" class="text-xs text-slate-500 mt-0.5"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones Clave de Compartir y Descargar Página Autónoma -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Descargar Fichero HTML Autónomo -->
+            <button 
+              id="btnDownloadHtml" 
+              class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5"
+              title="Descarga un fichero HTML completo de esta porra para alojarlo o compartirlo"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Descargar Fichero Web (.html)</span>
+            </button>
+
+            <!-- Copiar Enlace Compartible -->
+            <button 
+              id="btnCopyShareLink" 
+              class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-700 transition-colors flex items-center gap-1.5"
+              title="Copiar enlace con la porra precargada"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              <span>Copiar Enlace</span>
+            </button>
+
+            <!-- Copiar Resumen para WhatsApp / Texto -->
+            <button 
+              id="btnCopyWhatsAppSummary" 
+              class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-700 transition-colors flex items-center gap-1.5"
+              title="Copiar lista de apuestas formateada"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span>Copiar Lista</span>
+            </button>
+
+            <!-- Botón Reiniciar Apuestas -->
+            <button 
+              id="btnResetActivePorra" 
+              class="px-3 py-2 rounded-xl hover:bg-rose-50 text-xs font-medium text-rose-600 border border-transparent hover:border-rose-200 transition-colors"
+            >
+              Reiniciar
+            </button>
+          </div>
+        </div>
+
+        <!-- Estadísticas y Bote -->
+        <div class="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100">
+          <div class="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-medium text-slate-700">
+            Total Apuestas: <span id="statActiveBetsCount" class="font-bold text-slate-900">0</span>
+          </div>
+          <div id="statPrizeContainer" class="hidden px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-medium text-amber-800">
+            Premio/Bote: <span id="statActivePrize" class="font-bold"></span>
+          </div>
+          <div id="statFreeCellsContainer" class="px-3 py-1.5 rounded-xl bg-brand-50 border border-brand-200 text-xs font-medium text-brand-800">
+            Disponibles: <span id="statActiveFree" class="font-bold"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =====================================================================
+           ÁREA VISUAL: SEGÚN EL MODO ACTIVO
+           ===================================================================== -->
+
+      <!-- CONTENEDOR 1 & 3: TABLERO HEXAGONAL (FECHAS O NÚMEROS) -->
+      <div id="containerHexBoard" class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm flex flex-col items-center">
+        <div class="w-full flex justify-between items-center px-2 mb-3 text-xs text-slate-400 flex-wrap gap-2">
+          <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+            <span class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded bg-white border border-slate-300 inline-block"></span>
+              Laborable (L-V)
+            </span>
+            <span id="legendWeekendItem" class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded bg-slate-200 border border-red-400 inline-block"></span>
+              Fin de semana (Sáb/Dom)
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded bg-emerald-100 border border-emerald-400 inline-block"></span>
+              Apostado
+            </span>
+          </div>
+          <span id="boardColsNotice" class="hidden sm:inline">Columnas de 7 días (Lunes a Domingo)</span>
+        </div>
+
+        <div class="w-full relative flex justify-center items-center overflow-x-auto">
+          <canvas id="hexCanvas" class="max-w-full cursor-pointer touch-none"></canvas>
+        </div>
+      </div>
+
+      <!-- CONTENEDOR 2: RESULTADOS DE PARTIDO (EQUIPO LOCAL VS VISITANTE) -->
+      <div id="containerMatchResults" class="hidden space-y-6">
+        
+        <!-- Marcador Principal y Formulario Rápido de Apuesta -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          
+          <!-- Escenario del Partido -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-100">
+            <div class="text-center sm:text-left flex-1">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1">Equipo Local</div>
+              <h3 id="displayHomeTeamName" class="text-xl sm:text-2xl font-black text-slate-800"></h3>
+            </div>
+            
+            <div class="px-5 py-2 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-700 font-extrabold text-base sm:text-lg">
+              VS
+            </div>
+
+            <div class="text-center sm:text-right flex-1">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-1">Equipo Visitante</div>
+              <h3 id="displayAwayTeamName" class="text-xl sm:text-2xl font-black text-slate-800"></h3>
+            </div>
+          </div>
+
+          <!-- Formulario de Nueva Apuesta de Marcador -->
+          <div class="mt-6 max-w-xl mx-auto space-y-4">
+            <h4 class="text-sm font-bold text-slate-800 text-center">Añadir tu Pronóstico</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+              <div class="sm:col-span-1">
+                <label for="inputMatchPlayerName" class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Tu Nombre *</label>
+                <input 
+                  type="text" 
+                  id="inputMatchPlayerName" 
+                  placeholder="Ej: Laura M." 
+                  class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500"
+                  maxlength="25"
+                >
+              </div>
+
+              <div class="sm:col-span-1">
+                <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1 text-center">Goles (L - V)</label>
+                <div class="flex items-center gap-1 justify-center">
+                  <input 
+                    type="number" 
+                    id="inputMatchHomeGoals" 
+                    value="2" 
+                    min="0" 
+                    max="15" 
+                    class="w-14 text-center py-2 text-sm font-bold rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500"
+                  >
+                  <span class="font-bold text-slate-400">-</span>
+                  <input 
+                    type="number" 
+                    id="inputMatchAwayGoals" 
+                    value="1" 
+                    min="0" 
+                    max="15" 
+                    class="w-14 text-center py-2 text-sm font-bold rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+              </div>
+
+              <div class="sm:col-span-1">
+                <button 
+                  id="btnSubmitMatchBet" 
+                  type="button" 
+                  class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition-all"
+                >
+                  Guardar Apuesta
+                </button>
+              </div>
+            </div>
+
+            <!-- Accesos rápidos de resultados frecuentes -->
+            <div class="flex flex-wrap items-center justify-center gap-1.5 pt-2">
+              <span class="text-[11px] text-slate-400 mr-1">Rápidos:</span>
+              <button type="button" onclick="setQuickScore(1,0)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">1-0</button>
+              <button type="button" onclick="setQuickScore(2,0)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">2-0</button>
+              <button type="button" onclick="setQuickScore(2,1)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">2-1</button>
+              <button type="button" onclick="setQuickScore(1,1)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">1-1</button>
+              <button type="button" onclick="setQuickScore(0,0)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">0-0</button>
+              <button type="button" onclick="setQuickScore(0,1)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">0-1</button>
+              <button type="button" onclick="setQuickScore(1,2)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">1-2</button>
+              <button type="button" onclick="setQuickScore(2,2)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">2-2</button>
+              <button type="button" onclick="setQuickScore(3,1)" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700">3-1</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Muro de Resultados Apostados (Agrupados con Reparto de Premio) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <span>Pronósticos Registrados por Marcador</span>
+              <span id="badgeScoresCount" class="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-semibold">0 marcadores</span>
+            </h4>
+          </div>
+
+          <div id="matchScoreboardGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Inyectado dinámicamente con las tarjetas de resultado -->
+          </div>
+          <div id="emptyScoresNotice" class="text-center py-8 text-slate-400 text-xs font-medium">
+            Aún nadie ha pronosticado ningún resultado. ¡Introduce tu nombre y goles arriba para ser el primero!
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =====================================================================
+           LISTADO GENERAL DE PARTICIPANTES (Válido para todos los modos)
+           ===================================================================== -->
+      <div id="containerGeneralBetsList" class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+            <span>Listado de Participantes</span>
+            <span id="badgeParticipantsCount" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold">0</span>
+          </h3>
+
+          <div class="relative w-48 sm:w-64">
+            <input 
+              type="text" 
+              id="searchParticipantInput" 
+              placeholder="Buscar participante..." 
+              class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 transition-all"
+            >
+            <svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <div id="participantsListGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <!-- Inyectado dinámicamente -->
+        </div>
+        <div id="emptyParticipantsNotice" class="text-center py-8 text-slate-400 text-xs font-medium">
+          Aún no se ha registrado ninguna apuesta en esta porra.
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       MODAL: REGISTRAR / LIBERAR APUESTA HEXAGONAL (Fechas o Números)
+       ========================================================================= -->
+  <div id="hexModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-5">
+      
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3">
+          <div id="modalHexBadge" class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-700 border border-brand-200 flex flex-col items-center justify-center font-bold">
+            <span id="modalHexPrimaryText" class="text-lg leading-none font-black">--</span>
+            <span id="modalHexSecondaryText" class="text-[9px] uppercase tracking-wider text-brand-600">--</span>
+          </div>
+          <div>
+            <h3 id="modalHexTitle" class="text-base font-bold text-slate-800 leading-tight">Casilla Seleccionada</h3>
+            <span id="modalHexSubtitle" class="text-xs text-slate-400 font-medium">Información</span>
+          </div>
+        </div>
+        <button id="btnCloseHexModal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-3.5">
+        <div>
+          <label for="inputHexPlayerName" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            Nombre del Apostante *
+          </label>
+          <input 
+            type="text" 
+            id="inputHexPlayerName" 
+            placeholder="Ej: María Gómez, Carlos R., La Abuela..." 
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            maxlength="25"
+          >
+        </div>
+
+        <div>
+          <label for="inputHexPlayerNote" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            Nota o Comentario (Opcional)
+          </label>
+          <input 
+            type="text" 
+            id="inputHexPlayerNote" 
+            placeholder="Ej: A las 18:00h, Será niña..." 
+            class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            maxlength="40"
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+        <button 
+          id="btnReleaseHexCell" 
+          type="button" 
+          class="hidden text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl transition-colors"
+        >
+          Liberar Casilla
+        </button>
+        <div class="flex items-center gap-2 ml-auto">
+          <button 
+            id="btnCancelHexModal" 
+            type="button" 
+            class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button 
+            id="btnSaveHexBet" 
+            type="button" 
+            class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-sm transition-all"
+          >
+            Confirmar Apuesta
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pie de página minimalista -->
+  <footer class="border-t border-slate-200 py-4 text-center text-xs text-slate-400 bg-white">
+    FunnyMathPlanet &bull; Fábrica de Porras y Apuestas Colectivas
+  </footer>
+
+  <!-- =========================================================================
+       LÓGICA JAVASCRIPT: ARQUITECTURA MULTI-PORRA, CANVAS Y EXPORTACIÓN
+       ========================================================================= -->
+  <script>
+    /**
+     * Objeto de Estado Principal de la Aplicación
+     */
+    const PorraEngine = {
+      // Vista actual: 'hub' o 'active'
+      view: 'hub',
+      // Tipo seleccionado en el creador: 'fechas' | 'resultados' | 'numeros'
+      selectedType: 'fechas',
+      
+      // Configuración de la Porra Activa
+      porra: {
+        id: '',
+        title: 'Porra del Evento',
+        type: 'fechas',
+        prize: '',
+        // Fechas
+        startDateStr: '',
+        endDateStr: '',
+        dayFilter: 'all',
+        // Resultados
+        homeTeam: 'Real Madrid',
+        awayTeam: 'FC Barcelona',
+        // Números
+        startNum: 0,
+        endNum: 99
+      },
+
+      // Datos de celdas hexagonales (para fechas y números)
+      cells: [],
+      
+      // Apuestas registradas:
+      // Para 'fechas': { [dateStr]: { name, note, timestamp } }
+      // Para 'numeros': { [num]: { name, note, timestamp } }
+      // Para 'resultados': [ { id, name, homeGoals, awayGoals, note, timestamp } ]
+      bets: {},
+
+      // Celda hexagonal activa en modal
+      activeHexCell: null,
+      hoveredHexCell: null,
+
+      // Parámetros de geometría Canvas
+      hexRadius: 36,
+      canvasWidth: 800,
+      canvasHeight: 500,
+      offsetX: 0,
+      offsetY: 0
+    };
+
+    const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const FULL_DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+    // DOM Elements - Hub
+    const creatorHubView = document.getElementById('creatorHubView');
+    const typeSelectorCards = document.getElementById('typeSelectorCards');
+    const inputEventTitle = document.getElementById('inputEventTitle');
+    const inputEventPrize = document.getElementById('inputEventPrize');
+    const fieldsFechas = document.getElementById('fieldsFechas');
+    const fieldsResultados = document.getElementById('fieldsResultados');
+    const fieldsNumeros = document.getElementById('fieldsNumeros');
+    const inputStartDate = document.getElementById('inputStartDate');
+    const inputEndDate = document.getElementById('inputEndDate');
+    const datesCalcSummary = document.getElementById('datesCalcSummary');
+    const inputHomeTeam = document.getElementById('inputHomeTeam');
+    const inputAwayTeam = document.getElementById('inputAwayTeam');
+    const inputStartNum = document.getElementById('inputStartNum');
+    const inputEndNum = document.getElementById('inputEndNum');
+    const numbersCalcSummary = document.getElementById('numbersCalcSummary');
+    const btnBuildPorra = document.getElementById('btnBuildPorra');
+    const headerBtnNewPorra = document.getElementById('headerBtnNewPorra');
+
+    // DOM Elements - Active Porra
+    const activePorraView = document.getElementById('activePorraView');
+    const btnBackToHub = document.getElementById('btnBackToHub');
+    const activePorraTitle = document.getElementById('activePorraTitle');
+    const activePorraTypeBadge = document.getElementById('activePorraTypeBadge');
+    const activePorraSubtitle = document.getElementById('activePorraSubtitle');
+    const btnDownloadHtml = document.getElementById('btnDownloadHtml');
+    const btnCopyShareLink = document.getElementById('btnCopyShareLink');
+    const btnCopyWhatsAppSummary = document.getElementById('btnCopyWhatsAppSummary');
+    const btnResetActivePorra = document.getElementById('btnResetActivePorra');
+    const statActiveBetsCount = document.getElementById('statActiveBetsCount');
+    const statPrizeContainer = document.getElementById('statPrizeContainer');
+    const statActivePrize = document.getElementById('statActivePrize');
+    const statFreeCellsContainer = document.getElementById('statFreeCellsContainer');
+    const statActiveFree = document.getElementById('statActiveFree');
+
+    // Hexagonal Canvas
+    const containerHexBoard = document.getElementById('containerHexBoard');
+    const hexCanvas = document.getElementById('hexCanvas');
+    const ctx = hexCanvas.getContext('2d');
+
+    // Match Results UI
+    const containerMatchResults = document.getElementById('containerMatchResults');
+    const displayHomeTeamName = document.getElementById('displayHomeTeamName');
+    const displayAwayTeamName = document.getElementById('displayAwayTeamName');
+    const inputMatchPlayerName = document.getElementById('inputMatchPlayerName');
+    const inputMatchHomeGoals = document.getElementById('inputMatchHomeGoals');
+    const inputMatchAwayGoals = document.getElementById('inputMatchAwayGoals');
+    const btnSubmitMatchBet = document.getElementById('btnSubmitMatchBet');
+    const matchScoreboardGrid = document.getElementById('matchScoreboardGrid');
+    const emptyScoresNotice = document.getElementById('emptyScoresNotice');
+    const badgeScoresCount = document.getElementById('badgeScoresCount');
+
+    // Participants List
+    const participantsListGrid = document.getElementById('participantsListGrid');
+    const emptyParticipantsNotice = document.getElementById('emptyParticipantsNotice');
+    const badgeParticipantsCount = document.getElementById('badgeParticipantsCount');
+    const searchParticipantInput = document.getElementById('searchParticipantInput');
+
+    // Modal
+    const hexModal = document.getElementById('hexModal');
+    const modalHexBadge = document.getElementById('modalHexBadge');
+    const modalHexPrimaryText = document.getElementById('modalHexPrimaryText');
+    const modalHexSecondaryText = document.getElementById('modalHexSecondaryText');
+    const modalHexTitle = document.getElementById('modalHexTitle');
+    const modalHexSubtitle = document.getElementById('modalHexSubtitle');
+    const inputHexPlayerName = document.getElementById('inputHexPlayerName');
+    const inputHexPlayerNote = document.getElementById('inputHexPlayerNote');
+    const btnReleaseHexCell = document.getElementById('btnReleaseHexCell');
+    const btnCloseHexModal = document.getElementById('btnCloseHexModal');
+    const btnCancelHexModal = document.getElementById('btnCancelHexModal');
+    const btnSaveHexBet = document.getElementById('btnSaveHexBet');
+
+    /**
+     * Inicialización del Sistema
+     */
+    window.addEventListener('DOMContentLoaded', () => {
+      initDefaultDates();
+      setupEventListeners();
+      checkEmbeddedOrUrlData();
+    });
+
+    function initDefaultDates() {
+      const today = new Date();
+      const future = new Date();
+      future.setDate(today.getDate() + 60);
+
+      inputStartDate.value = formatDateForInput(today);
+      inputEndDate.value = formatDateForInput(future);
+      updateDatesSummary();
+    }
+
+    function formatDateForInput(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    /**
+     * Escuchadores de eventos
+     */
+    function setupEventListeners() {
+      // Selección de tipo en el Hub
+      typeSelectorCards.querySelectorAll('.porra-type-card').forEach(card => {
+        card.addEventListener('click', () => {
+          selectPorraType(card.dataset.type);
+        });
+      });
+
+      // Actualizaciones dinámicas en formularios
+      inputStartDate.addEventListener('change', updateDatesSummary);
+      inputEndDate.addEventListener('change', updateDatesSummary);
+      document.querySelectorAll('input[name="datesDayFilter"]').forEach(r => {
+        r.addEventListener('change', updateDatesSummary);
+      });
+
+      inputStartNum.addEventListener('input', updateNumbersSummary);
+      inputEndNum.addEventListener('input', updateNumbersSummary);
+
+      // Botón generar
+      btnBuildPorra.addEventListener('click', () => {
+        buildPorraFromHub();
+      });
+
+      // Navegación
+      btnBackToHub.addEventListener('click', showHubView);
+      headerBtnNewPorra.addEventListener('click', showHubView);
+
+      // Acciones de Porra Activa
+      btnDownloadHtml.addEventListener('click', exportStandaloneHtmlFile);
+      btnCopyShareLink.addEventListener('click', copyShareLinkToClipboard);
+      btnCopyWhatsAppSummary.addEventListener('click', copyWhatsAppSummary);
+      btnResetActivePorra.addEventListener('click', resetCurrentBets);
+
+      // Búsqueda
+      searchParticipantInput.addEventListener('input', () => {
+        renderParticipantsList(searchParticipantInput.value.trim().toLowerCase());
+      });
+
+      // Canvas Hexagonal
+      hexCanvas.addEventListener('mousemove', handleCanvasMouseMove);
+      hexCanvas.addEventListener('mouseleave', () => {
+        if (PorraEngine.hoveredHexCell !== null) {
+          PorraEngine.hoveredHexCell = null;
+          drawHexGrid();
+        }
+      });
+      hexCanvas.addEventListener('click', handleCanvasClick);
+
+      window.addEventListener('resize', () => {
+        if (PorraEngine.view === 'active' && (PorraEngine.porra.type === 'fechas' || PorraEngine.porra.type === 'numeros')) {
+          fitAndDrawHexCanvas();
+        }
+      });
+
+      // Modal Hexagonal
+      btnCloseHexModal.addEventListener('click', closeHexModal);
+      btnCancelHexModal.addEventListener('click', closeHexModal);
+      btnSaveHexBet.addEventListener('click', saveHexBet);
+      btnReleaseHexCell.addEventListener('click', releaseHexCell);
+
+      inputHexPlayerName.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveHexBet();
+      });
+
+      // Guardar apuesta de partido
+      btnSubmitMatchBet.addEventListener('click', submitMatchBet);
+      inputMatchPlayerName.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submitMatchBet();
+      });
+    }
+
+    /**
+     * Selección de tipo en el Hub
+     */
+    function selectPorraType(type) {
+      PorraEngine.selectedType = type;
+
+      // Actualizar aspecto de tarjetas
+      typeSelectorCards.querySelectorAll('.porra-type-card').forEach(c => {
+        if (c.dataset.type === type) {
+          c.classList.add('border-brand-500', 'bg-white');
+          c.classList.remove('border-slate-200');
+        } else {
+          c.classList.remove('border-brand-500');
+          c.classList.add('border-slate-200');
+        }
+      });
+
+      // Mostrar campos correspondientes
+      fieldsFechas.classList.toggle('hidden', type !== 'fechas');
+      fieldsResultados.classList.toggle('hidden', type !== 'resultados');
+      fieldsNumeros.classList.toggle('hidden', type !== 'numeros');
+
+      // Actualizar placeholder del título según tipo
+      if (type === 'fechas' && (!inputEventTitle.value || inputEventTitle.value.includes('Madrid') || inputEventTitle.value.includes('Cesta'))) {
+        inputEventTitle.value = 'Porra del Nacimiento';
+      } else if (type === 'resultados' && (!inputEventTitle.value || inputEventTitle.value.includes('Nacimiento') || inputEventTitle.value.includes('Cesta'))) {
+        inputEventTitle.value = 'Final de Champions League';
+      } else if (type === 'numeros' && (!inputEventTitle.value || inputEventTitle.value.includes('Nacimiento') || inputEventTitle.value.includes('Champions'))) {
+        inputEventTitle.value = 'Sorteo Cesta de Navidad';
+      }
+    }
+
+    /**
+     * Cálculos previos para fechas
+     */
+    function updateDatesSummary() {
+      const dates = getCalculatedDatesList();
+      const weeks = Math.round(dates.length / 7);
+      datesCalcSummary.textContent = `${dates.length} casillas (${weeks} semanas completas de Lunes a Domingo)`;
+    }
+
+    function getCalculatedDatesList() {
+      return getCalculatedDatesListFromConfig(
+        inputStartDate.value,
+        inputEndDate.value,
+        document.querySelector('input[name="datesDayFilter"]:checked')?.value || 'all'
+      );
+    }
+
+    /**
+     * Cálculos previos para números
+     */
+    function updateNumbersSummary() {
+      const start = parseInt(inputStartNum.value, 10) || 0;
+      const end = parseInt(inputEndNum.value, 10) || 0;
+      const total = Math.max(0, end - start + 1);
+      numbersCalcSummary.textContent = `${total} números (del ${start} al ${end})`;
+    }
+
+    /**
+     * CONSTRUIR Y ABRIR LA PORRA DESDE EL HUB
+     */
+    function buildPorraFromHub() {
+      const title = inputEventTitle.value.trim() || 'Porra del Evento';
+      const prize = inputEventPrize.value.trim();
+      const type = PorraEngine.selectedType;
+
+      const porraData = {
+        id: 'porra_' + Date.now(),
+        title: title,
+        type: type,
+        prize: prize
+      };
+
+      if (type === 'fechas') {
+        const dates = getCalculatedDatesList();
+        if (dates.length === 0) {
+          alert('Por favor selecciona un rango de fechas válido con al menos 1 día.');
+          return;
+        }
+        porraData.startDateStr = inputStartDate.value;
+        porraData.endDateStr = inputEndDate.value;
+        porraData.dayFilter = document.querySelector('input[name="datesDayFilter"]:checked').value;
+      } else if (type === 'resultados') {
+        const home = inputHomeTeam.value.trim() || 'Equipo Local';
+        const away = inputAwayTeam.value.trim() || 'Equipo Visitante';
+        porraData.homeTeam = home;
+        porraData.awayTeam = away;
+      } else if (type === 'numeros') {
+        const s = parseInt(inputStartNum.value, 10) || 0;
+        const e = parseInt(inputEndNum.value, 10) || 0;
+        if (s >= e) {
+          alert('El número final debe ser mayor que el inicial.');
+          return;
+        }
+        porraData.startNum = s;
+        porraData.endNum = e;
+      }
+
+      PorraEngine.porra = porraData;
+      PorraEngine.bets = (type === 'resultados') ? [] : {};
+
+      activatePorraView();
+      savePorraLocally();
+    }
+
+    /**
+     * ACTIVAR LA VISTA DE LA PORRA
+     */
+    function activatePorraView() {
+      PorraEngine.view = 'active';
+      creatorHubView.classList.add('hidden');
+      activePorraView.classList.remove('hidden');
+
+      const p = PorraEngine.porra;
+      activePorraTitle.textContent = p.title;
+
+      // Subtítulo e información
+      if (p.type === 'fechas') {
+        activePorraTypeBadge.textContent = 'Fechas';
+        activePorraTypeBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-800';
+        activePorraSubtitle.textContent = `Rango: ${p.startDateStr} a ${p.endDateStr}`;
+      } else if (p.type === 'resultados') {
+        activePorraTypeBadge.textContent = 'Partido';
+        activePorraTypeBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800';
+        activePorraSubtitle.textContent = `${p.homeTeam} vs ${p.awayTeam}`;
+      } else if (p.type === 'numeros') {
+        activePorraTypeBadge.textContent = 'Números';
+        activePorraTypeBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800';
+        activePorraSubtitle.textContent = `Números del ${p.startNum} al ${p.endNum}`;
+      }
+
+      // Mostrar/ocultar contenedores específicos
+      if (p.type === 'fechas' || p.type === 'numeros') {
+        containerHexBoard.classList.remove('hidden');
+        containerMatchResults.classList.add('hidden');
+        buildHexCellsForActivePorra();
+        fitAndDrawHexCanvas();
+      } else {
+        containerHexBoard.classList.add('hidden');
+        containerMatchResults.classList.remove('hidden');
+        displayHomeTeamName.textContent = p.homeTeam;
+        displayAwayTeamName.textContent = p.awayTeam;
+        renderMatchScoreboard();
+      }
+
+      // Actualizar Estadísticas
+      updateActiveStats();
+      renderParticipantsList();
+    }
+
+    function showHubView() {
+      PorraEngine.view = 'hub';
+      activePorraView.classList.add('hidden');
+      creatorHubView.classList.remove('hidden');
+    }
+
+    /**
+     * GEOMETRÍA HEXAGONAL PARA FECHAS Y NÚMEROS
+     */
+    function buildHexCellsForActivePorra() {
+      const p = PorraEngine.porra;
+      PorraEngine.cells = [];
+
+      let rawItems = [];
+
+      if (p.type === 'fechas') {
+        rawItems = getCalculatedDatesListFromConfig(p.startDateStr, p.endDateStr, p.dayFilter);
+      } else if (p.type === 'numeros') {
+        for (let num = p.startNum; num <= p.endNum; num++) {
+          rawItems.push({
+            num: num,
+            numStr: String(num)
+          });
+        }
+      }
+
+      const N = rawItems.length;
+      // Para fechas: exactamente 7 columnas (Lunes a Domingo) para ordenar por semanas enteras
+      const cols = (p.type === 'fechas') ? 7 : Math.max(4, Math.ceil(Math.sqrt(N * 1.35)));
+
+      for (let i = 0; i < N; i++) {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        const r_offset = Math.floor(row / 2);
+        const q = col - r_offset;
+        const r = row;
+
+        PorraEngine.cells.push({
+          id: i + 1,
+          q: q,
+          r: r,
+          x: 0,
+          y: 0,
+          ...rawItems[i]
+        });
+      }
+    }
+
+    function getCalculatedDatesListFromConfig(s, e, filter = 'all') {
+      if (!s || !e) return [];
+      const start = new Date(s + 'T00:00:00');
+      const end = new Date(e + 'T00:00:00');
+      if (start > end) return [];
+
+      // 1. Ajustar siempre fecha de inicio al Lunes de esa semana (0=Dom, 1=Lun, ..., 6=Sáb)
+      const startDay = start.getDay();
+      const diffToMonday = (startDay === 0 ? -6 : 1 - startDay);
+      start.setDate(start.getDate() + diffToMonday);
+
+      // 2. Ajustar siempre fecha final al Domingo de esa semana (semanas completas)
+      const endDay = end.getDay();
+      const diffToSunday = (endDay === 0 ? 0 : 7 - endDay);
+      end.setDate(end.getDate() + diffToSunday);
+
+      const list = [];
+      const current = new Date(start);
+
+      while (current <= end) {
+        const dayOfWeek = current.getDay();
+        let include = true;
+        if (filter === 'weekdays' && (dayOfWeek === 0 || dayOfWeek === 6)) include = false;
+        if (filter === 'weekends' && (dayOfWeek !== 0 && dayOfWeek !== 6)) include = false;
+
+        if (include) {
+          const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+          list.push({
+            date: new Date(current),
+            dateStr: formatDateForInput(current),
+            dayNum: current.getDate(),
+            monthName: MONTH_NAMES[current.getMonth()],
+            dayName: DAY_NAMES[dayOfWeek],
+            fullDayName: FULL_DAY_NAMES[dayOfWeek],
+            isWeekend: isWeekend
+          });
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return list;
+    }
+
+    /**
+     * Ajusta y dibuja el Canvas Hexagonal
+     */
+    function fitAndDrawHexCanvas() {
+      if (PorraEngine.cells.length === 0) return;
+
+      const container = hexCanvas.parentElement;
+      const dpr = window.devicePixelRatio || 1;
+      const availWidth = Math.min(container.clientWidth || 800, 1150);
+
+      const sqrt3 = Math.sqrt(3);
+      let minU_X = Infinity, maxU_X = -Infinity;
+      let minU_Y = Infinity, maxU_Y = -Infinity;
+
+      for (const c of PorraEngine.cells) {
+        const uX = sqrt3 * c.q + (sqrt3 / 2) * c.r;
+        const uY = 1.5 * c.r;
+        minU_X = Math.min(minU_X, uX - sqrt3 / 2);
+        maxU_X = Math.max(maxU_X, uX + sqrt3 / 2);
+        minU_Y = Math.min(minU_Y, uY - 1);
+        maxU_Y = Math.max(maxU_Y, uY + 1);
+      }
+
+      const gridW = maxU_X - minU_X;
+      const gridH = maxU_Y - minU_Y;
+
+      const padding = 36;
+      let radius = (availWidth - padding * 2) / gridW;
+      radius = Math.max(26, Math.min(radius, 46));
+      PorraEngine.hexRadius = radius;
+
+      const realCanvasW = Math.round(gridW * radius + padding * 2);
+      const realCanvasH = Math.round(gridH * radius + padding * 2);
+
+      hexCanvas.width = realCanvasW * dpr;
+      hexCanvas.height = realCanvasH * dpr;
+      hexCanvas.style.width = `${realCanvasW}px`;
+      hexCanvas.style.height = `${realCanvasH}px`;
+
+      ctx.resetTransform();
+      ctx.scale(dpr, dpr);
+
+      let realMinX = Infinity, realMaxX = -Infinity;
+      let realMinY = Infinity, realMaxY = -Infinity;
+
+      for (const c of PorraEngine.cells) {
+        const px = radius * (sqrt3 * c.q + (sqrt3 / 2) * c.r);
+        const py = radius * (1.5 * c.r);
+        realMinX = Math.min(realMinX, px - (sqrt3 / 2) * radius);
+        realMaxX = Math.max(realMaxX, px + (sqrt3 / 2) * radius);
+        realMinY = Math.min(realMinY, py - radius);
+        realMaxY = Math.max(realMaxY, py + radius);
+      }
+
+      PorraEngine.offsetX = (realCanvasW - (realMaxX + realMinX)) / 2;
+      PorraEngine.offsetY = (realCanvasH - (realMaxY + realMinY)) / 2;
+
+      for (const c of PorraEngine.cells) {
+        c.x = radius * (sqrt3 * c.q + (sqrt3 / 2) * c.r) + PorraEngine.offsetX;
+        c.y = radius * (1.5 * c.r) + PorraEngine.offsetY;
+      }
+
+      PorraEngine.canvasWidth = realCanvasW;
+      PorraEngine.canvasHeight = realCanvasH;
+
+      drawHexGrid();
+    }
+
+    function drawHexGrid() {
+      ctx.clearRect(0, 0, PorraEngine.canvasWidth, PorraEngine.canvasHeight);
+      for (const cell of PorraEngine.cells) {
+        drawIndividualHexCell(cell);
+      }
+    }
+
+    function drawIndividualHexCell(cell) {
+      const radius = PorraEngine.hexRadius;
+      const isHovered = PorraEngine.hoveredHexCell && PorraEngine.hoveredHexCell.id === cell.id;
+      const isDates = PorraEngine.porra.type === 'fechas';
+      const key = isDates ? cell.dateStr : String(cell.num);
+      const bet = PorraEngine.bets[key];
+      const isClaimed = !!bet;
+
+      const corners = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 180) * (60 * i + 30);
+        corners.push({
+          x: cell.x + radius * Math.cos(angle),
+          y: cell.y + radius * Math.sin(angle)
+        });
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(corners[0].x, corners[0].y);
+      for (let i = 1; i < 6; i++) {
+        ctx.lineTo(corners[i].x, corners[i].y);
+      }
+      ctx.closePath();
+
+      // Estilo de fondo y borde según estado y tipo de día
+      const isWeekend = isDates && cell.isWeekend;
+
+      if (isWeekend) {
+        // FIN DE SEMANA (SÁBADO Y DOMINGO): Color rojo y fondo algo más oscuro
+        if (isClaimed) {
+          ctx.fillStyle = isHovered ? '#bbf7d0' : '#dcfce7';
+          ctx.fill();
+          ctx.strokeStyle = isHovered ? '#b91c1c' : '#ef4444';
+          ctx.lineWidth = isHovered ? 3 : 2.2;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = isHovered ? '#cbd5e1' : '#e2e8f0'; // Fondo gris suave para resaltar del fondo blanco
+          ctx.fill();
+          ctx.strokeStyle = isHovered ? '#b91c1c' : '#f87171'; // Borde rojo
+          ctx.lineWidth = isHovered ? 2.6 : 1.6;
+          ctx.stroke();
+        }
+      } else {
+        // DÍA LABORABLE O NÚMERO
+        if (isClaimed) {
+          ctx.fillStyle = isHovered ? '#bbf7d0' : '#dcfce7';
+          ctx.fill();
+          ctx.strokeStyle = isHovered ? '#16a34a' : '#4ade80';
+          ctx.lineWidth = isHovered ? 2.5 : 1.8;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = isHovered ? '#f1f5f9' : '#ffffff';
+          ctx.fill();
+          ctx.strokeStyle = isHovered ? '#94a3b8' : '#cbd5e1';
+          ctx.lineWidth = isHovered ? 2 : 1.2;
+          ctx.stroke();
+        }
+      }
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (isDates) {
+        // Renderizado para fechas
+        if (isClaimed) {
+          ctx.fillStyle = isWeekend ? '#991b1b' : '#065f46';
+          ctx.font = '600 10px Inter, sans-serif';
+          ctx.fillText(`${cell.dayNum} ${cell.monthName}`, cell.x, cell.y - radius * 0.42);
+
+          ctx.fillStyle = '#047857';
+          ctx.font = 'bold 12px Inter, sans-serif';
+          let displayName = bet.name;
+          if (displayName.length > 9) displayName = displayName.substring(0, 8) + '…';
+          ctx.fillText(displayName, cell.x, cell.y + radius * 0.05);
+
+          ctx.fillStyle = isWeekend ? '#dc2626' : '#059669';
+          ctx.font = (isWeekend ? 'bold ' : '500 ') + '9px Inter, sans-serif';
+          ctx.fillText(cell.dayName, cell.x, cell.y + radius * 0.45);
+        } else {
+          if (isWeekend) {
+            // Textos en rojo para fin de semana
+            ctx.fillStyle = '#dc2626';
+            ctx.font = 'bold 9px Inter, sans-serif';
+            ctx.fillText(`${cell.dayName.toUpperCase()}`, cell.x, cell.y - radius * 0.44);
+
+            ctx.fillStyle = '#991b1b';
+            ctx.font = `bold ${Math.round(radius * 0.52)}px Inter, sans-serif`;
+            ctx.fillText(`${cell.dayNum}`, cell.x, cell.y + 1);
+
+            ctx.fillStyle = '#ef4444';
+            ctx.font = '600 10px Inter, sans-serif';
+            ctx.fillText(`${cell.monthName}`, cell.x, cell.y + radius * 0.46);
+          } else {
+            // Textos estándar para días laborables
+            ctx.fillStyle = '#64748b';
+            ctx.font = '600 9px Inter, sans-serif';
+            ctx.fillText(`${cell.dayName.toUpperCase()}`, cell.x, cell.y - radius * 0.44);
+
+            ctx.fillStyle = '#1e293b';
+            ctx.font = `bold ${Math.round(radius * 0.52)}px Inter, sans-serif`;
+            ctx.fillText(`${cell.dayNum}`, cell.x, cell.y + 1);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '500 10px Inter, sans-serif';
+            ctx.fillText(`${cell.monthName}`, cell.x, cell.y + radius * 0.46);
+          }
+        }
+      } else {
+        // Renderizado para números
+        if (isClaimed) {
+          ctx.fillStyle = '#92400e';
+          ctx.font = 'bold 10px Inter, sans-serif';
+          ctx.fillText(`Nº ${cell.num}`, cell.x, cell.y - radius * 0.42);
+
+          ctx.fillStyle = '#047857';
+          ctx.font = 'bold 12px Inter, sans-serif';
+          let displayName = bet.name;
+          if (displayName.length > 9) displayName = displayName.substring(0, 8) + '…';
+          ctx.fillText(displayName, cell.x, cell.y + radius * 0.1);
+        } else {
+          ctx.fillStyle = '#1e293b';
+          ctx.font = `bold ${Math.round(radius * 0.54)}px Inter, sans-serif`;
+          ctx.fillText(`${cell.num}`, cell.x, cell.y);
+        }
+      }
+    }
+
+    function getHexCellAtPoint(px, py) {
+      if (!PorraEngine.cells) return null;
+      const radius = PorraEngine.hexRadius;
+      for (const cell of PorraEngine.cells) {
+        if (Math.hypot(cell.x - px, cell.y - py) <= radius * 0.96) {
+          return cell;
+        }
+      }
+      return null;
+    }
+
+    function handleCanvasMouseMove(e) {
+      const rect = hexCanvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      const cell = getHexCellAtPoint(px, py);
+      if (cell !== PorraEngine.hoveredHexCell) {
+        PorraEngine.hoveredHexCell = cell;
+        hexCanvas.style.cursor = cell ? 'pointer' : 'default';
+        drawHexGrid();
+      }
+    }
+
+    function handleCanvasClick(e) {
+      const rect = hexCanvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      const cell = getHexCellAtPoint(px, py);
+      if (cell) openHexModal(cell);
+    }
+
+    /**
+     * MODAL HEXAGONAL (Fechas o Números)
+     */
+    function openHexModal(cell) {
+      PorraEngine.activeHexCell = cell;
+      const isDates = PorraEngine.porra.type === 'fechas';
+      const key = isDates ? cell.dateStr : String(cell.num);
+      const existingBet = PorraEngine.bets[key];
+
+      if (isDates) {
+        modalHexPrimaryText.textContent = cell.dayNum;
+        modalHexSecondaryText.textContent = cell.monthName;
+        modalHexTitle.textContent = `${cell.dayNum} de ${cell.monthName} (${cell.date.getFullYear()})`;
+        modalHexSubtitle.textContent = cell.isWeekend ? `${cell.fullDayName} (Fin de semana)` : cell.fullDayName;
+
+        if (cell.isWeekend) {
+          modalHexBadge.className = 'w-12 h-12 rounded-2xl bg-slate-100 text-red-600 border border-slate-300 flex flex-col items-center justify-center font-bold';
+        } else {
+          modalHexBadge.className = 'w-12 h-12 rounded-2xl bg-brand-50 text-brand-700 border border-brand-200 flex flex-col items-center justify-center font-bold';
+        }
+      } else {
+        modalHexBadge.className = 'w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex flex-col items-center justify-center font-bold';
+        modalHexPrimaryText.textContent = cell.num;
+        modalHexSecondaryText.textContent = 'NÚM';
+        modalHexTitle.textContent = `Número ${cell.num}`;
+        modalHexSubtitle.textContent = 'Casilla de la Porra';
+      }
+
+      if (existingBet) {
+        inputHexPlayerName.value = existingBet.name;
+        inputHexPlayerNote.value = existingBet.note || '';
+        btnReleaseHexCell.classList.remove('hidden');
+        btnSaveHexBet.textContent = 'Actualizar Nombre';
+      } else {
+        inputHexPlayerName.value = '';
+        inputHexPlayerNote.value = '';
+        btnReleaseHexCell.classList.add('hidden');
+        btnSaveHexBet.textContent = 'Confirmar Apuesta';
+      }
+
+      hexModal.classList.remove('hidden');
+      setTimeout(() => inputHexPlayerName.focus(), 100);
+    }
+
+    function closeHexModal() {
+      hexModal.classList.add('hidden');
+      PorraEngine.activeHexCell = null;
+    }
+
+    function saveHexBet() {
+      const name = inputHexPlayerName.value.trim();
+      if (!name) {
+        inputHexPlayerName.focus();
+        return;
+      }
+      const cell = PorraEngine.activeHexCell;
+      if (!cell) return;
+
+      const isDates = PorraEngine.porra.type === 'fechas';
+      const key = isDates ? cell.dateStr : String(cell.num);
+
+      PorraEngine.bets[key] = {
+        name: name,
+        note: inputHexPlayerNote.value.trim(),
+        timestamp: Date.now()
+      };
+
+      savePorraLocally();
+      closeHexModal();
+      drawHexGrid();
+      updateActiveStats();
+      renderParticipantsList();
+    }
+
+    function releaseHexCell() {
+      const cell = PorraEngine.activeHexCell;
+      if (!cell) return;
+      const isDates = PorraEngine.porra.type === 'fechas';
+      const key = isDates ? cell.dateStr : String(cell.num);
+
+      if (confirm(`¿Liberar esta casilla para que otra persona pueda apostar?`)) {
+        delete PorraEngine.bets[key];
+        savePorraLocally();
+        closeHexModal();
+        drawHexGrid();
+        updateActiveStats();
+        renderParticipantsList();
+      }
+    }
+
+    /**
+     * LÓGICA: PORRA DE RESULTADOS (PARTIDO DEPORTIVO)
+     */
+    function submitMatchBet() {
+      const name = inputMatchPlayerName.value.trim();
+      if (!name) {
+        inputMatchPlayerName.focus();
+        return;
+      }
+      const hGoals = parseInt(inputMatchHomeGoals.value, 10);
+      const aGoals = parseInt(inputMatchAwayGoals.value, 10);
+
+      if (isNaN(hGoals) || isNaN(aGoals) || hGoals < 0 || aGoals < 0) {
+        alert('Por favor introduce un número de goles válido.');
+        return;
+      }
+
+      if (!Array.isArray(PorraEngine.bets)) {
+        PorraEngine.bets = [];
+      }
+
+      PorraEngine.bets.push({
+        id: 'bet_' + Date.now(),
+        name: name,
+        homeGoals: hGoals,
+        awayGoals: aGoals,
+        scoreKey: `${hGoals}-${aGoals}`,
+        timestamp: Date.now()
+      });
+
+      inputMatchPlayerName.value = '';
+      savePorraLocally();
+      renderMatchScoreboard();
+      updateActiveStats();
+      renderParticipantsList();
+    }
+
+    function setQuickScore(h, a) {
+      inputMatchHomeGoals.value = h;
+      inputMatchAwayGoals.value = a;
+      inputMatchPlayerName.focus();
+    }
+
+    /**
+     * Renderiza las tarjetas de resultados agrupados
+     */
+    function renderMatchScoreboard() {
+      matchScoreboardGrid.innerHTML = '';
+      const betsList = Array.isArray(PorraEngine.bets) ? PorraEngine.bets : [];
+
+      // Agrupar por resultado "X-Y"
+      const grouped = {};
+      betsList.forEach(b => {
+        const key = b.scoreKey;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(b);
+      });
+
+      const uniqueScores = Object.keys(grouped);
+      badgeScoresCount.textContent = `${uniqueScores.length} marcadores pronosticados`;
+
+      if (uniqueScores.length === 0) {
+        emptyScoresNotice.classList.remove('hidden');
+        return;
+      }
+      emptyScoresNotice.classList.add('hidden');
+
+      uniqueScores.forEach(scoreKey => {
+        const participants = grouped[scoreKey];
+        const [hg, ag] = scoreKey.split('-');
+
+        const card = document.createElement('div');
+        card.className = 'p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 transition-all space-y-3';
+
+        let prizeShareText = '';
+        if (PorraEngine.porra.prize && participants.length > 1) {
+          prizeShareText = `<div class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block border border-amber-200">
+            Reparto compartido: 1/${participants.length} del premio
+          </div>`;
+        }
+
+        const namesListHtml = participants.map(p => `
+          <li class="text-xs font-semibold text-slate-800 flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
+            <span>${escapeHtml(p.name)}</span>
+            <button onclick="deleteMatchBet('${p.id}')" class="text-slate-300 hover:text-rose-600 transition-colors" title="Eliminar apuesta">
+              &times;
+            </button>
+          </li>
+        `).join('');
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="px-3.5 py-1.5 rounded-xl bg-indigo-600 text-white font-black text-base shadow-sm">
+              ${hg} - ${ag}
+            </div>
+            <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-xl border border-indigo-200">
+              ${participants.length} ${participants.length === 1 ? 'persona' : 'personas'}
+            </span>
+          </div>
+          ${prizeShareText}
+          <ul class="pt-1">
+            ${namesListHtml}
+          </ul>
+        `;
+        matchScoreboardGrid.appendChild(card);
+      });
+    }
+
+    window.deleteMatchBet = function(betId) {
+      if (confirm('¿Deseas eliminar esta apuesta?')) {
+        PorraEngine.bets = PorraEngine.bets.filter(b => b.id !== betId);
+        savePorraLocally();
+        renderMatchScoreboard();
+        updateActiveStats();
+        renderParticipantsList();
+      }
+    };
+
+    /**
+     * ACTUALIZAR ESTADÍSTICAS
+     */
+    function updateActiveStats() {
+      const p = PorraEngine.porra;
+      let totalBets = 0;
+
+      if (p.type === 'resultados') {
+        totalBets = Array.isArray(PorraEngine.bets) ? PorraEngine.bets.length : 0;
+        statFreeCellsContainer.classList.add('hidden');
+      } else {
+        totalBets = Object.keys(PorraEngine.bets).length;
+        statFreeCellsContainer.classList.remove('hidden');
+        const free = Math.max(0, PorraEngine.cells.length - totalBets);
+        statActiveFree.textContent = free;
+      }
+
+      statActiveBetsCount.textContent = totalBets;
+
+      if (p.prize) {
+        statPrizeContainer.classList.remove('hidden');
+        statActivePrize.textContent = p.prize;
+      } else {
+        statPrizeContainer.classList.add('hidden');
+      }
+    }
+
+    /**
+     * RENDERIZAR LISTADO DE PARTICIPANTES
+     */
+    function renderParticipantsList(query = '') {
+      participantsListGrid.innerHTML = '';
+      const p = PorraEngine.porra;
+      const list = [];
+
+      if (p.type === 'resultados') {
+        const bets = Array.isArray(PorraEngine.bets) ? PorraEngine.bets : [];
+        bets.forEach(b => {
+          if (!query || b.name.toLowerCase().includes(query)) {
+            list.push({
+              badge: `${b.homeGoals}-${b.awayGoals}`,
+              badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+              title: b.name,
+              subtitle: `Pronóstico: ${b.homeGoals} - ${b.awayGoals}`
+            });
+          }
+        });
+      } else if (p.type === 'fechas') {
+        for (const cell of PorraEngine.cells) {
+          const bet = PorraEngine.bets[cell.dateStr];
+          if (bet && (!query || bet.name.toLowerCase().includes(query))) {
+            const badgeColor = cell.isWeekend 
+              ? 'bg-slate-100 text-red-700 border-slate-300' 
+              : 'bg-brand-100 text-brand-800 border-brand-200';
+            list.push({
+              badge: `${cell.dayNum} ${cell.monthName}`,
+              badgeColor: badgeColor,
+              title: bet.name,
+              subtitle: `${cell.fullDayName}${cell.isWeekend ? ' (Fin de semana)' : ''}${bet.note ? ' · ' + bet.note : ''}`,
+              cell: cell
+            });
+          }
+        }
+      } else if (p.type === 'numeros') {
+        for (const cell of PorraEngine.cells) {
+          const bet = PorraEngine.bets[String(cell.num)];
+          if (bet && (!query || bet.name.toLowerCase().includes(query))) {
+            list.push({
+              badge: `Nº ${cell.num}`,
+              badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
+              title: bet.name,
+              subtitle: bet.note || 'Número asignado',
+              cell: cell
+            });
+          }
+        }
+      }
+
+      badgeParticipantsCount.textContent = `${list.length} apuestas`;
+
+      if (list.length === 0) {
+        emptyParticipantsNotice.classList.remove('hidden');
+        if (query) {
+          emptyParticipantsNotice.textContent = `No se encontraron participantes con el nombre "${query}".`;
+        } else {
+          emptyParticipantsNotice.textContent = 'Aún no se ha registrado ninguna apuesta en esta porra.';
+        }
+      } else {
+        emptyParticipantsNotice.classList.add('hidden');
+        list.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between hover:bg-slate-100/70 transition-colors';
+          if (item.cell) {
+            card.style.cursor = 'pointer';
+            card.onclick = () => openHexModal(item.cell);
+          }
+
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="px-2.5 py-1.5 rounded-xl font-bold text-xs border flex items-center justify-center ${item.badgeColor}">
+                ${item.badge}
+              </div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-slate-800 truncate">${escapeHtml(item.title)}</div>
+                <div class="text-[11px] text-slate-400 truncate">${escapeHtml(item.subtitle)}</div>
+              </div>
+            </div>
+            <div class="text-slate-400 text-xs font-bold">⬡</div>
+          `;
+          participantsListGrid.appendChild(card);
+        });
+      }
+    }
+
+    /**
+     * REINICIAR APUESTAS
+     */
+    function resetCurrentBets() {
+      if (confirm('¿Estás seguro de que deseas reiniciar todas las apuestas anotadas en esta porra?')) {
+        PorraEngine.bets = (PorraEngine.porra.type === 'resultados') ? [] : {};
+        savePorraLocally();
+        if (PorraEngine.porra.type === 'resultados') {
+          renderMatchScoreboard();
+        } else {
+          drawHexGrid();
+        }
+        updateActiveStats();
+        renderParticipantsList();
+      }
+    }
+
+    /**
+     * DESCARGAR FICHERO HTML AUTÓNOMO
+     * Genera un archivo HTML completo con los datos pre-inyectados
+     */
+    function exportStandaloneHtmlFile() {
+      const payload = {
+        porra: PorraEngine.porra,
+        bets: PorraEngine.bets
+      };
+
+      // Evitar conflictos con el parser HTML al serializar
+      const safeCloseTag = '<' + '/script>';
+      const payloadJson = JSON.stringify(payload).split(safeCloseTag).join('<\\/script>');
+      
+      // Obtener el HTML actual completo
+      let fullHtml = document.documentElement.outerHTML;
+
+      // Inyectar el payload en una variable global antes del script principal
+      const injectionMarker = 'window.INITIAL_PORRA_DATA = ';
+      const scriptOpenTag = '<' + 'script>';
+      if (!fullHtml.includes(injectionMarker)) {
+        fullHtml = fullHtml.replace(
+          scriptOpenTag,
+          `${scriptOpenTag}\n  window.INITIAL_PORRA_DATA = ${payloadJson};\n`
+        );
+      } else {
+        fullHtml = fullHtml.replace(
+          /window\.INITIAL_PORRA_DATA\s*=\s*[\s\S]*?;\n/,
+          `window.INITIAL_PORRA_DATA = ${payloadJson};\n`
+        );
+      }
+
+      // Nombre amigable para el archivo descargado
+      const cleanTitle = PorraEngine.porra.title.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 30);
+      const filename = `porra_${cleanTitle || 'evento'}.html`;
+
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      alert(`¡Fichero autónomo "${filename}" generado y descargado! Puedes enviarlo por correo o abrirlo en cualquier navegador.`);
+    }
+
+    /**
+     * COPIAR ENLACE COMPARTIBLE CON ESTADO EN HASH
+     */
+    function copyShareLinkToClipboard() {
+      const payload = {
+        p: PorraEngine.porra,
+        b: PorraEngine.bets
+      };
+      const jsonStr = JSON.stringify(payload);
+      const encoded = encodeURIComponent(jsonStr);
+      const shareUrl = `${window.location.origin}${window.location.pathname}#porra=${encoded}`;
+
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('¡Enlace de la porra copiado al portapapeles! Puedes pegarlo y compartirlo en tu grupo.');
+      }).catch(() => {
+        prompt('Copia este enlace para compartir:', shareUrl);
+      });
+    }
+
+    /**
+     * COPIAR RESUMEN PARA WHATSAPP
+     */
+    function copyWhatsAppSummary() {
+      const p = PorraEngine.porra;
+      let text = `📋 *${p.title.toUpperCase()}*\n`;
+      if (p.prize) text += `🏆 Premio/Bote: ${p.prize}\n`;
+
+      if (p.type === 'resultados') {
+        text += `⚽ Partido: ${p.homeTeam} vs ${p.awayTeam}\n`;
+        text += `------------------------------------\n`;
+        const bets = Array.isArray(PorraEngine.bets) ? PorraEngine.bets : [];
+        if (bets.length === 0) {
+          text += `(Aún no hay apuestas registradas)\n`;
+        } else {
+          bets.forEach(b => {
+            text += `• ${b.name}: ${b.homeGoals} - ${b.awayGoals}\n`;
+          });
+        }
+      } else if (p.type === 'fechas') {
+        text += `📅 Apuesta de Fechas (Rango: ${p.startDateStr} a ${p.endDateStr})\n`;
+        text += `------------------------------------\n`;
+        let count = 0;
+        for (const cell of PorraEngine.cells) {
+          const b = PorraEngine.bets[cell.dateStr];
+          if (b) {
+            text += `• ${cell.dayNum} ${cell.monthName} (${cell.dayName}): ${b.name}${b.note ? ' [' + b.note + ']' : ''}\n`;
+            count++;
+          }
+        }
+        if (count === 0) text += `(Aún no hay fechas elegidas)\n`;
+      } else if (p.type === 'numeros') {
+        text += `🔢 Apuesta Numérica (Del ${p.startNum} al ${p.endNum})\n`;
+        text += `------------------------------------\n`;
+        let count = 0;
+        for (const cell of PorraEngine.cells) {
+          const b = PorraEngine.bets[String(cell.num)];
+          if (b) {
+            text += `• Nº ${cell.num}: ${b.name}${b.note ? ' [' + b.note + ']' : ''}\n`;
+            count++;
+          }
+        }
+        if (count === 0) text += `(Aún no hay números elegidos)\n`;
+      }
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert('¡Resumen de la porra copiado al portapapeles! Listo para pegar en WhatsApp.');
+      }).catch(() => {
+        alert('No se pudo copiar automáticamente.');
+      });
+    }
+
+    /**
+     * PERSISTENCIA LOCAL Y CARGA DE DATOS EMBEBIDOS O URL
+     */
+    const STORAGE_KEY = 'funny_math_porra_active_v2';
+
+    function savePorraLocally() {
+      const payload = {
+        porra: PorraEngine.porra,
+        bets: PorraEngine.bets
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    }
+
+    function checkEmbeddedOrUrlData() {
+      // 1. Comprobar si viene inyectado directamente en un fichero descargado
+      if (window.INITIAL_PORRA_DATA && window.INITIAL_PORRA_DATA.porra) {
+        PorraEngine.porra = window.INITIAL_PORRA_DATA.porra;
+        PorraEngine.bets = window.INITIAL_PORRA_DATA.bets || (PorraEngine.porra.type === 'resultados' ? [] : {});
+        activatePorraView();
+        return;
+      }
+
+      // 2. Comprobar si viene en el hash de la URL (#porra=...)
+      if (window.location.hash.startsWith('#porra=')) {
+        try {
+          const encoded = window.location.hash.substring(7);
+          const jsonStr = decodeURIComponent(encoded);
+          const data = JSON.parse(jsonStr);
+          if (data.p) {
+            PorraEngine.porra = data.p;
+            PorraEngine.bets = data.b || (PorraEngine.porra.type === 'resultados' ? [] : {});
+            activatePorraView();
+            return;
+          }
+        } catch (e) {
+          console.warn('Error leyendo porra desde URL hash:', e);
+        }
+      }
+
+      // 3. Cargar desde LocalStorage si existe una sesión previa
+      const savedStr = localStorage.getItem(STORAGE_KEY);
+      if (savedStr) {
+        try {
+          const saved = JSON.parse(savedStr);
+          if (saved.porra && saved.porra.type) {
+            PorraEngine.porra = saved.porra;
+            PorraEngine.bets = saved.bets || (PorraEngine.porra.type === 'resultados' ? [] : {});
+            activatePorraView();
+            return;
+          }
+        } catch (e) {
+          console.warn('Error cargando porra guardada:', e);
+        }
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[m]));
+    }
+  </script>
+</body>
+</html>

@@ -2,6 +2,10 @@
 
 Suite de juegos matemáticos interactivos 100% nativos para navegador de **FunnyMathPlanet**. Toda la aplicación es estática e independiente, no requiere R, Shiny ni servidores backend, y funciona al instante en cualquier navegador web moderno (escritorio, tablet o móvil).
 
+Puedes visitar la web directamente aquí:
+
+ [https://fervilber.github.io/juegosfer/](https://fervilber.github.io/juegosfer/)
+
 ---
 
 ## 🎮 Catálogo de Juegos Disponibles
@@ -15,25 +19,33 @@ Suite de juegos matemáticos interactivos 100% nativos para navegador de **Funny
 3. **🧭 Busca el Tesoro: La Isla Matemática** (`hexatreasure.html`):
    - Triangula la casilla donde está enterrado el tesoro secreto a partir de las sumas de caminos mínimos desde las balizas (🌴 Palmera, ⛵ Barca, 🦜 Loro, 🪵 Barril, 💀 Calavera).
    - Herramientas de excavación (⛏️) y descarte (🚩 / ❌), Salón de la Fama, solución oficial y descarga de PDF A4 con pistas impresas al pie (ideal para jugar a lápiz o libros impresos KDP).
+4. **⬡ La Porra** (`porra.html`):
+   - Fábrica de apuestas y pronósticos colectivos con 3 modalidades: **Fechas** (malla hexagonal en columnas de 7 por semanas completas con fines de semana resaltados en gris y texto rojo), **Resultados de Partidos** (enfrentamiento local vs visitante con reparto de premio compartido entre acertantes) y **Números** (tablero hexagonal para sorteos).
+   - Generación y descarga de ficheros HTML autónomos listos para compartir, enlaces parametrizados para grupos y exportación estructurada para WhatsApp.
 
 ---
 
 ## 🚀 Cómo Ejecutar la Aplicación
 
 ### Opción 1: Ejecución Directa en Navegador
+
 Haz doble clic sobre el archivo [`index.html`](index.html) para abrir el portal de juegos directamente en tu navegador (Chrome, Edge, Firefox, Safari).
 
 ### Opción 2: Servidor Local Estático (Opcional)
+
 Si deseas servirlo localmente mediante cualquier servidor estático rápido:
 
 - **Con Python**:
+
   ```bash
   cd web_app
   python -m http.server 8080
   ```
+
   Accede a `http://localhost:8080`.
 
 - **Con Node.js (npx serve)**:
+
   ```bash
   npx serve web_app
   ```

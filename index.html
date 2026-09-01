@@ -60,7 +60,7 @@
   <!-- =========================================================================
        HERO / INTRODUCCIÓN
        ========================================================================= -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-12">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-12">
     
     <div class="text-center space-y-3 max-w-2xl mx-auto">
       <span class="bg-brand-100 text-brand-700 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -75,9 +75,9 @@
     </div>
 
     <!-- =========================================================================
-         TARJETAS DE SELECCIÓN DE JUEGOS (CATÁLOGO DE 3 JUEGOS)
+         TARJETAS DE SELECCIÓN DE JUEGOS (CATÁLOGO DE 4 JUEGOS)
          ========================================================================= -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
       <!-- JUEGO 1: LABERINTO DE SUMAS -->
       <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
@@ -174,7 +174,7 @@
               🧭
             </div>
             <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">
-              🏴‍☠️ ¡Nuevo!
+              🏴‍☠️ Deducción
             </span>
           </div>
 
@@ -201,7 +201,50 @@
 
         <div class="p-6 pt-0">
           <a href="hexatreasure.html" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group text-sm">
-            <span>💎 Jugar a Busca el Tesoro</span>
+            <span>💎 Jugar al Tesoro</span>
+            <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- JUEGO 4: LA PORRA (APUESTAS COLECTIVAS) -->
+      <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300">
+        <div class="p-6 space-y-4">
+          
+          <div class="flex justify-between items-start">
+            <div class="w-13 h-13 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-indigo-100 p-2.5 font-bold">
+              ⬡
+            </div>
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-full">
+              ✨ ¡Nuevo!
+            </span>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900 mb-1">
+              La Porra
+            </h2>
+            <p class="text-xs text-indigo-700 font-semibold uppercase tracking-wider mb-2">
+              Fábrica de Apuestas
+            </p>
+            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+              Crea y comparte porras de <b>fechas</b> en panal, <b>resultados</b> de partidos o <b>números</b> para sorteos colectivos.
+            </p>
+          </div>
+
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-1 pt-1">
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">📅 Fechas</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">⚽ Partidos</span>
+            <span class="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">🔢 Números</span>
+          </div>
+
+        </div>
+
+        <div class="p-6 pt-0">
+          <a href="porra.html" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group text-sm">
+            <span>⬡ Entrar a La Porra</span>
             <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
           </a>
         </div>
